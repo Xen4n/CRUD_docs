@@ -6,6 +6,12 @@
 
 Welcome to CRUD_operations's documentation!
 ===========================================
+
+.. toctree::
+   :maxdepth: 2
+
+	example1
+	
 .. sidebar:: Боковая врезка
 
    Оформление врезки зависит от используемой HTML-темы.	
@@ -29,11 +35,7 @@ Welcome to CRUD_operations's documentation!
 	
 .. index::  ! Супер указатель	
 	
-.. toctree::
-   :maxdepth: 2
 
-	example1
-	genindex
 
 Indices and tables
 ==================
