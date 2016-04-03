@@ -1,0 +1,45 @@
+.. CRUD_operations documentation master file, created by
+   sphinx-quickstart on Sun Apr  3 23:06:09 2016.
+   You can adapt this file completely to your liking, but it should at least
+   contain the root `toctree` directive.
+   
+
+Welcome to CRUD_operations's documentation!
+===========================================
+.. sidebar:: Боковая врезка
+
+   Оформление врезки зависит от используемой HTML-темы.	
+
+Приветствую тебя, пользователь.
+	--*Администратор*
+	
+:menuselection:`Файл --> О&ткрыть`
+
+:guilabel:`&Открыть`
+	
+.. rubric:: Пример рубрики
+
+Текст рубрики
+
+.. function:: getJPAContent()
+
+   Описание функции получение контента JPA
+	
+.. index:: Указатель	
+	
+.. index::  ! Супер указатель	
+	
+.. toctree::
+   :maxdepth: 2
+
+	example1
+	genindex
+
+Indices and tables
+==================
+
+* :ref:`genindex`
+* :ref:`modindex`
+* :ref:`example1`
+* :ref:`search`
+
