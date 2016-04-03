@@ -1,11 +1,6 @@
 
 CRUD_operations documentation
 ===========================================
-
-.. toctree::
-   :maxdepth: 2
-
-	example1
 	
 .. sidebar:: Боковая врезка
 
