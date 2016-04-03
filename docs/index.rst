@@ -1,10 +1,5 @@
-.. CRUD_operations documentation master file, created by
-   sphinx-quickstart on Sun Apr  3 23:06:09 2016.
-   You can adapt this file completely to your liking, but it should at least
-   contain the root `toctree` directive.
-   
 
-Welcome to CRUD_operations's documentation!
+CRUD_operations documentation
 ===========================================
 
 .. toctree::
