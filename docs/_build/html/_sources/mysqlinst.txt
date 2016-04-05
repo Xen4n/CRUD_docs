@@ -34,7 +34,7 @@
 
 .. image:: _images/diagram.png
 	:height: 252px
-	:alt: Диаграмма базы данных
+	:alt: Base diagram
 	:align: center
 
 
@@ -51,8 +51,8 @@
 На следующем окне отмечаем **MySQL Server** и **MySQL WorkBench** для своей разрядности системы.
 
 .. image:: _images/custom.png
-	:height: 252px
-	:alt: Диаграмма базы данных
+	:height: 590px
+	:alt: Checked programs
 	:align: center
 	
 Затем выбираем папку установки отдельно для **Server** и для **WorkBench**, подтверждаем начало скачивания.

@@ -36,6 +36,6 @@ Indices and tables
 ==================
 
 * :ref:`genindex`
-* :ref:`modindex`
+* :ref:`mysqlinst`
 * :ref:`example1`
 * :ref:`search`
