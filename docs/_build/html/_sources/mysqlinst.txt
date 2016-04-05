@@ -33,11 +33,11 @@
 Диаграмма предложенной модели базы будет выглядеть так:
 
 .. image:: _static/diagram.PNG
-       :height: 100px
-       :width: 200 px
-       :scale: 50 %
+       :height: 252px
+       :width: 478 px
+       :scale: 100%
        :alt: alternate text
-       :align: right
+       :align: center
 
 Установка MySQL сервера
 -----------------------
@@ -52,11 +52,11 @@
 На следующем окне отмечаем **MySQL Server** и **MySQL WorkBench** для своей разрядности системы.
 
 .. image:: _static/custom.PNG
-       :height: 100px
-       :width: 200 px
-       :scale: 50 %
+       :height: 590px
+       :width: 787 px
+       :scale: 100 %
        :alt: alternate text
-       :align: right
+       :align: center
 	
 Затем выбираем папку установки отдельно для **Server** и для **WorkBench**, подтверждаем начало скачивания.
 После удачной установки обех программ необходимо настроить сервер.
