@@ -1,41 +1,12 @@
-
+.. _main_index:
 CRUD_operations documentation
 ===========================================
 	
 .. toctree::
-
-   example1
-   mysqlinst
+	:maxdepth: 3
 	
-.. sidebar:: Боковая врезка
-
-   Оформление врезки зависит от используемой HTML-темы.	
-
-Приветствую тебя, пользователь.
-	--*Администратор*
+	example1
+	mysqlinst
 	
-:menuselection:`Файл --> О&ткрыть`
-
-:guilabel:`&Открыть`
-	
-.. rubric:: Пример рубрики
-
-Текст рубрики
-
-.. function:: getJPAContent()
-
-   Описание функции получение контента JPA
-	
-.. index:: Указатель	
-	
-.. index::  ! Супер указатель	
-	
-
-
-Indices and tables
-==================
 
 * :ref:`genindex`
-* :ref:`mysqlinst`
-* :ref:`example1`
-* :ref:`search`
