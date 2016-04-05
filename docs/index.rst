@@ -5,6 +5,7 @@ CRUD_operations documentation
 .. toctree::
 
    example1
+   MySQL
 	
 .. sidebar:: Боковая врезка
 
