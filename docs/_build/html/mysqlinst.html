@@ -1,0 +1,217 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+
+<html xmlns="http://www.w3.org/1999/xhtml" lang="ru">
+  <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    
+    <title>База данных MySQL &mdash; Документация CRUD_docs 1</title>
+    
+    <link rel="stylesheet" href="_static/classic.css" type="text/css" />
+    <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
+    
+    <script type="text/javascript">
+      var DOCUMENTATION_OPTIONS = {
+        URL_ROOT:    './',
+        VERSION:     '1',
+        COLLAPSE_INDEX: false,
+        FILE_SUFFIX: '.html',
+        HAS_SOURCE:  true
+      };
+    </script>
+    <script type="text/javascript" src="_static/jquery.js"></script>
+    <script type="text/javascript" src="_static/underscore.js"></script>
+    <script type="text/javascript" src="_static/doctools.js"></script>
+    <script type="text/javascript" src="_static/translations.js"></script>
+    <link rel="top" title="Документация CRUD_docs 1" href="index.html" />
+    <link rel="prev" title="Заголовок 1 уровня" href="example1.html" /> 
+  </head>
+  <body role="document">
+    <div class="related" role="navigation" aria-label="related navigation">
+      <h3>Навигация</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="genindex.html" title="Алфавитный указатель"
+             accesskey="I">указатель</a></li>
+        <li class="right" >
+          <a href="example1.html" title="Заголовок 1 уровня"
+             accesskey="P">назад</a> |</li>
+        <li class="nav-item nav-item-0"><a href="index.html">Документация CRUD_docs 1</a> &raquo;</li> 
+      </ul>
+    </div>  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          <div class="body" role="main">
+            
+  <div class="section" id="mysql">
+<h1>База данных MySQL<a class="headerlink" href="#mysql" title="Ссылка на этот заголовок">¶</a></h1>
+<p>Для системы ввода, вывода и редактирования информации необходимо где-то эту информацию хранить.
+Поэтому мы создадим базу данных. (В нашем случае мы используем MySQL)</p>
+<div class="section" id="id1">
+<h2>Проектирование базы данных<a class="headerlink" href="#id1" title="Ссылка на этот заголовок">¶</a></h2>
+<p>Наш сайт будет работать со списком автомобилей.
+Для начала смоделируем базу, состоящую из двух таблиц: <code class="docutils literal"><span class="pre">brand</span></code> и <code class="docutils literal"><span class="pre">models</span></code>.</p>
+<p>Таблица <code class="docutils literal"><span class="pre">brand</span></code> будет содержать:</p>
+<ul class="simple">
+<li>уникальный id марки</li>
+<li>имя марки</li>
+<li>год основания</li>
+<li>место расположения штаб-квардиры</li>
+</ul>
+<p>Таблица <code class="docutils literal"><span class="pre">models</span></code>, к примеру, будет содержать:</p>
+<ul class="simple">
+<li>уникальный id модели</li>
+<li>id бренда, к которому относится</li>
+<li>имя модели</li>
+<li>поколение модели</li>
+<li>год производства</li>
+<li>количество дверей</li>
+<li>количество сидений</li>
+<li>максимальная скорость</li>
+</ul>
+<p>Диаграмма предложенной модели базы будет выглядеть так:</p>
+<a class="reference internal image-reference" href="_images/diagram.png"><img alt="Диаграмма базы данных" class="align-center" src="_images/diagram.png" style="height: 252px;" /></a>
+</div>
+<div class="section" id="id2">
+<h2>Установка MySQL сервера<a class="headerlink" href="#id2" title="Ссылка на этот заголовок">¶</a></h2>
+<p>В данном руководстве мы предлагаем осуществить установку вместе с WorkBench
+для быстрого и удобного доступа к данным и их редактирования.</p>
+<p>Для этого перейдем по <a class="reference external" href="https://dev.mysql.com/downloads/workbench/">ссылке</a>
+и скачаем подходящий под вашу систему дестрибутив.</p>
+<p>Во время установки подтверждаем лицезию. Далее выбираем режим установки Custom и жмем далее.
+На следующем окне отмечаем <strong>MySQL Server</strong> и <strong>MySQL WorkBench</strong> для своей разрядности системы.</p>
+<a class="reference internal image-reference" href="_images/custom.png"><img alt="Диаграмма базы данных" class="align-center" src="_images/custom.png" style="height: 252px;" /></a>
+<p>Затем выбираем папку установки отдельно для <strong>Server</strong> и для <strong>WorkBench</strong>, подтверждаем начало скачивания.
+После удачной установки обех программ необходимо настроить сервер.</p>
+<p>На первом  окне оставляем всё по умолчанию.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Проверьте:</th><td class="field-body">В поле Config Type должно быть выбрано <code class="docutils literal"><span class="pre">Development</span> <span class="pre">Machine</span></code>.</td>
+</tr>
+</tbody>
+</table>
+<p>На следующем этапе вводим пароль. В нашем проекте используется пароль <code class="docutils literal"><span class="pre">0000</span></code>.</p>
+<div class="admonition attention">
+<p class="first admonition-title">Внимание</p>
+<p class="last">Если вы устанавливаете свой пароль, отличный от нашего, то в дальнейшем придется
+отредактировать конфигурацию Java сервера, указав ваш пароль.</p>
+</div>
+<p>Дальше подтверждаем установки по умолчанию.</p>
+<p>После успешного завершения конфигурации сервера нажимаем &#8220;Finish&#8221;.</p>
+</div>
+<div class="section" id="id4">
+<h2>Наполнение MySQL базы<a class="headerlink" href="#id4" title="Ссылка на этот заголовок">¶</a></h2>
+<ol class="arabic simple">
+<li>Один</li>
+<li>Два</li>
+<li>Три</li>
+</ol>
+<hr class="docutils" />
+<ol class="arabic simple" start="5">
+<li>Пять</li>
+<li>Шесть</li>
+<li>Семь</li>
+</ol>
+<div class="section" id="id5">
+<h3>Заголовок 3 уровня<a class="headerlink" href="#id5" title="Ссылка на этот заголовок">¶</a></h3>
+<ul class="simple">
+<li>Один</li>
+<li>Два</li>
+<li>Три</li>
+</ul>
+<div class="section" id="id6">
+<h4>Заголовок 4 уровня<a class="headerlink" href="#id6" title="Ссылка на этот заголовок">¶</a></h4>
+<ul>
+<li><dl class="first docutils">
+<dt>Первый уровень</dt>
+<dd><ul class="first last">
+<li><dl class="first docutils">
+<dt>Второй уровень</dt>
+<dd><ul class="first last simple">
+<li>Третий уровень</li>
+</ul>
+</dd>
+</dl>
+</li>
+</ul>
+</dd>
+</dl>
+</li>
+</ul>
+<p>Посмотрим на исходный код:</p>
+<div class="highlight-default"><div class="highlight"><pre><span></span><span class="n">Пример</span> <span class="n">исходного</span> <span class="n">кода</span>
+</pre></div>
+</div>
+</div>
+</div>
+</div>
+</div>
+
+
+          </div>
+        </div>
+      </div>
+      <div class="sphinxsidebar" role="navigation" aria-label="main navigation">
+        <div class="sphinxsidebarwrapper">
+  <h3><a href="index.html">Оглавление</a></h3>
+  <ul>
+<li><a class="reference internal" href="#">База данных MySQL</a><ul>
+<li><a class="reference internal" href="#id1">Проектирование базы данных</a></li>
+<li><a class="reference internal" href="#id2">Установка MySQL сервера</a></li>
+<li><a class="reference internal" href="#id4">Наполнение MySQL базы</a><ul>
+<li><a class="reference internal" href="#id5">Заголовок 3 уровня</a><ul>
+<li><a class="reference internal" href="#id6">Заголовок 4 уровня</a></li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+
+  <h4>Предыдущий раздел</h4>
+  <p class="topless"><a href="example1.html"
+                        title="предыдущая глава">Заголовок 1 уровня</a></p>
+  <div role="note" aria-label="source link">
+    <h3>Эта страница</h3>
+    <ul class="this-page-menu">
+      <li><a href="_sources/mysqlinst.txt"
+            rel="nofollow">Исходный текст</a></li>
+    </ul>
+   </div>
+<div id="searchbox" style="display: none" role="search">
+  <h3>Быстрый поиск</h3>
+    <form class="search" action="search.html" method="get">
+      <input type="text" name="q" />
+      <input type="submit" value="Искать" />
+      <input type="hidden" name="check_keywords" value="yes" />
+      <input type="hidden" name="area" value="default" />
+    </form>
+</div>
+<script type="text/javascript">$('#searchbox').show(0);</script>
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="related" role="navigation" aria-label="related navigation">
+      <h3>Навигация</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="genindex.html" title="Алфавитный указатель"
+             >указатель</a></li>
+        <li class="right" >
+          <a href="example1.html" title="Заголовок 1 уровня"
+             >назад</a> |</li>
+        <li class="nav-item nav-item-0"><a href="index.html">Документация CRUD_docs 1</a> &raquo;</li> 
+      </ul>
+    </div>
+    <div class="footer" role="contentinfo">
+        &copy; Copyright 2016, Dmitriy, Vladimir.
+    </div>
+  </body>
+</html>

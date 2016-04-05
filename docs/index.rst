@@ -5,7 +5,7 @@ CRUD_operations documentation
 .. toctree::
 
    example1
-   MySQL
+   mysqlinst
 	
 .. sidebar:: Боковая врезка
 
