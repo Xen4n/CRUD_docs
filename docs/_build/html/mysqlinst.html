@@ -105,49 +105,133 @@
 <p>После успешного завершения конфигурации сервера нажимаем &#8220;Finish&#8221;.</p>
 </div>
 <div class="section" id="id4">
-<h2>Наполнение MySQL базы<a class="headerlink" href="#id4" title="Ссылка на этот заголовок">¶</a></h2>
-<ol class="arabic simple">
-<li>Один</li>
-<li>Два</li>
-<li>Три</li>
-</ol>
-<hr class="docutils" />
-<ol class="arabic simple" start="5">
-<li>Пять</li>
-<li>Шесть</li>
-<li>Семь</li>
-</ol>
-<div class="section" id="id5">
-<h3>Заголовок 3 уровня<a class="headerlink" href="#id5" title="Ссылка на этот заголовок">¶</a></h3>
-<ul class="simple">
-<li>Один</li>
-<li>Два</li>
-<li>Три</li>
-</ul>
-<div class="section" id="id6">
-<h4>Заголовок 4 уровня<a class="headerlink" href="#id6" title="Ссылка на этот заголовок">¶</a></h4>
-<ul>
-<li><dl class="first docutils">
-<dt>Первый уровень</dt>
-<dd><ul class="first last">
-<li><dl class="first docutils">
-<dt>Второй уровень</dt>
-<dd><ul class="first last simple">
-<li>Третий уровень</li>
-</ul>
-</dd>
-</dl>
-</li>
-</ul>
-</dd>
-</dl>
-</li>
-</ul>
-<p>Посмотрим на исходный код:</p>
-<div class="highlight-default"><div class="highlight"><pre><span></span><span class="n">Пример</span> <span class="n">исходного</span> <span class="n">кода</span>
+<h2>Создание базы данных<a class="headerlink" href="#id4" title="Ссылка на этот заголовок">¶</a></h2>
+<p>После запуска WorkBench подключаемся к созданному серверу баз данных,
+кликнув по прямоугольнику на главной странице.</p>
+<p>Теперь нам нужно <strong>создать новую базу</strong>. Для этого в открывшемся окне вводим и выполняем запрос:</p>
+<div class="highlight-sql"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre>1
+2</pre></div></td><td class="code"><div class="highlight"><pre><span></span><span class="k">CREATE</span> <span class="k">DATABASE</span> <span class="k">IF</span> <span class="k">NOT</span> <span class="k">EXISTS</span> <span class="o">`</span><span class="n">cars_db</span><span class="o">`</span> <span class="k">DEFAULT</span> <span class="nb">CHARACTER</span> <span class="k">SET</span> <span class="n">utf8</span> <span class="k">COLLATE</span> <span class="n">utf8_general_ci</span><span class="p">;</span>
+<span class="n">USE</span> <span class="o">`</span><span class="n">cars_db</span><span class="o">`</span><span class="p">;</span>
 </pre></div>
+</td></tr></table></div>
+<div class="section" id="id5">
+<h3>Добавление таблиц<a class="headerlink" href="#id5" title="Ссылка на этот заголовок">¶</a></h3>
+<p>Выше мы упомянули о том, что нам необходимо 2 таблицы с определёнными полями. Давайте создадим их,
+выполнив в поле ввода такой SQL запрос:</p>
+<div class="highlight-sql"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre> 1
+ 2
+ 3
+ 4
+ 5
+ 6
+ 7
+ 8
+ 9
+10
+11
+12
+13
+14
+15
+16
+17
+18
+19
+20</pre></div></td><td class="code"><div class="highlight"><pre><span></span><span class="k">CREATE</span> <span class="k">TABLE</span> <span class="n">brand</span><span class="p">(</span>
+        <span class="n">idBrand</span> <span class="nb">INT</span> <span class="k">NOT</span> <span class="k">NULL</span> <span class="n">AUTO_INCREMENT</span><span class="p">,</span>
+        <span class="n">name</span> <span class="nb">VARCHAR</span><span class="p">(</span><span class="mi">70</span><span class="p">)</span> <span class="k">NOT</span> <span class="k">NULL</span><span class="p">,</span>
+        <span class="n">foundedYear</span> <span class="nb">SMALLINT</span><span class="p">(</span><span class="mi">4</span><span class="p">),</span>
+        <span class="n">headquarter</span> <span class="nb">VARCHAR</span><span class="p">(</span><span class="mi">200</span><span class="p">),</span>
+        <span class="k">PRIMARY</span> <span class="k">KEY</span> <span class="p">(</span><span class="n">idBrand</span><span class="p">)</span>
+<span class="p">);</span>
+
+<span class="k">CREATE</span> <span class="k">TABLE</span>  <span class="n">model</span><span class="p">(</span>
+        <span class="n">idModel</span> <span class="nb">INT</span> <span class="k">NOT</span> <span class="k">NULL</span> <span class="n">AUTO_INCREMENT</span><span class="p">,</span>
+        <span class="n">idBrand</span> <span class="nb">INT</span> <span class="k">NOT</span> <span class="k">NULL</span><span class="p">,</span>
+        <span class="n">modelName</span> <span class="nb">VARCHAR</span><span class="p">(</span><span class="mi">100</span><span class="p">)</span> <span class="k">NOT</span> <span class="k">NULL</span><span class="p">,</span>
+        <span class="n">generation</span> <span class="nb">VARCHAR</span><span class="p">(</span><span class="mi">100</span><span class="p">),</span>
+        <span class="n">productionYear</span> <span class="nb">SMALLINT</span><span class="p">(</span><span class="mi">4</span><span class="p">),</span>
+        <span class="n">doors</span> <span class="n">TINYINT</span><span class="p">(</span><span class="mi">3</span><span class="p">),</span>
+        <span class="n">seats</span> <span class="n">TINYINT</span><span class="p">(</span><span class="mi">3</span><span class="p">),</span>
+        <span class="n">maximumSpeed</span> <span class="nb">SMALLINT</span><span class="p">(</span><span class="mi">4</span><span class="p">),</span>
+        <span class="k">PRIMARY</span> <span class="k">KEY</span> <span class="p">(</span><span class="n">idModel</span><span class="p">),</span>
+        <span class="k">FOREIGN</span> <span class="k">KEY</span> <span class="p">(</span><span class="n">idBrand</span><span class="p">)</span> <span class="k">REFERENCES</span> <span class="n">brand</span><span class="p">(</span><span class="n">idBrand</span><span class="p">)</span> <span class="k">ON</span> <span class="k">DELETE</span> <span class="k">CASCADE</span>
+<span class="p">);</span>
+</pre></div>
+</td></tr></table></div>
 </div>
-</div>
+<div class="section" id="id6">
+<h3>Наполнение базы<a class="headerlink" href="#id6" title="Ссылка на этот заголовок">¶</a></h3>
+<p>В принципе, в таком состоянии база готова для дальнейшей работы, но для наглядности предлагаем наполнить её некоторыми данными.
+Для этого выполним такой запрос:</p>
+<div class="highlight-sql"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre> 1
+ 2
+ 3
+ 4
+ 5
+ 6
+ 7
+ 8
+ 9
+10
+11
+12
+13
+14
+15
+16
+17
+18
+19
+20
+21
+22
+23
+24
+25
+26
+27
+28
+29
+30
+31
+32
+33</pre></div></td><td class="code"><div class="highlight"><pre><span></span><span class="k">INSERT</span> <span class="k">INTO</span> <span class="n">brand</span> <span class="p">(</span><span class="n">name</span><span class="p">,</span><span class="n">foundedYear</span><span class="p">,</span><span class="n">headquarter</span><span class="p">)</span>
+<span class="k">VALUES</span> <span class="p">(</span><span class="ss">&quot;Volkswagen&quot;</span><span class="p">,</span><span class="mi">1946</span><span class="p">,</span><span class="ss">&quot;Wolfsburg, Germany&quot;</span><span class="p">);</span>
+<span class="k">INSERT</span> <span class="k">INTO</span> <span class="n">brand</span> <span class="p">(</span><span class="n">name</span><span class="p">,</span><span class="n">foundedYear</span><span class="p">,</span><span class="n">headquarter</span><span class="p">)</span>
+<span class="k">VALUES</span> <span class="p">(</span><span class="ss">&quot;Audi&quot;</span><span class="p">,</span><span class="mi">1910</span><span class="p">,</span><span class="ss">&quot;Ingolstadt, Germany&quot;</span><span class="p">);</span>
+<span class="k">INSERT</span> <span class="k">INTO</span> <span class="n">brand</span> <span class="p">(</span><span class="n">name</span><span class="p">,</span><span class="n">foundedYear</span><span class="p">,</span><span class="n">headquarter</span><span class="p">)</span>
+<span class="k">VALUES</span> <span class="p">(</span><span class="ss">&quot;Fiat&quot;</span><span class="p">,</span><span class="mi">1902</span><span class="p">,</span><span class="ss">&quot;Turin, Italy&quot;</span><span class="p">);</span>
+<span class="k">INSERT</span> <span class="k">INTO</span> <span class="n">brand</span> <span class="p">(</span><span class="n">name</span><span class="p">,</span><span class="n">foundedYear</span><span class="p">,</span><span class="n">headquarter</span><span class="p">)</span>
+<span class="k">VALUES</span> <span class="p">(</span><span class="ss">&quot;Opel&quot;</span><span class="p">,</span><span class="mi">1862</span><span class="p">,</span><span class="ss">&quot;Rüsselsheim, Hesse, Germany&quot;</span><span class="p">);</span>
+<span class="k">INSERT</span> <span class="k">INTO</span> <span class="n">brand</span> <span class="p">(</span><span class="n">name</span><span class="p">,</span><span class="n">foundedYear</span><span class="p">,</span><span class="n">headquarter</span><span class="p">)</span>
+<span class="k">VALUES</span> <span class="p">(</span><span class="ss">&quot;Nissan Motor Co.&quot;</span><span class="p">,</span><span class="mi">1933</span><span class="p">,</span><span class="ss">&quot;Nishi-ku, Yokohama, Japan&quot;</span><span class="p">);</span>
+<span class="k">INSERT</span> <span class="k">INTO</span> <span class="n">brand</span> <span class="p">(</span><span class="n">name</span><span class="p">,</span><span class="n">foundedYear</span><span class="p">,</span><span class="n">headquarter</span><span class="p">)</span>
+<span class="k">VALUES</span> <span class="p">(</span><span class="ss">&quot;Tesla Motors&quot;</span><span class="p">,</span><span class="mi">2003</span><span class="p">,</span><span class="ss">&quot;Palo Alto, California, U.S.&quot;</span><span class="p">);</span>
+<span class="k">INSERT</span> <span class="k">INTO</span> <span class="n">brand</span> <span class="p">(</span><span class="n">name</span><span class="p">,</span><span class="n">foundedYear</span><span class="p">,</span><span class="n">headquarter</span><span class="p">)</span>
+<span class="k">VALUES</span> <span class="p">(</span><span class="ss">&quot;Škoda Auto&quot;</span><span class="p">,</span><span class="mi">1895</span><span class="p">,</span><span class="ss">&quot;Mladá Boleslav, Czech Republic&quot;</span><span class="p">);</span>
+<span class="k">INSERT</span> <span class="k">INTO</span> <span class="n">brand</span> <span class="p">(</span><span class="n">name</span><span class="p">,</span><span class="n">foundedYear</span><span class="p">,</span><span class="n">headquarter</span><span class="p">)</span>
+<span class="k">VALUES</span> <span class="p">(</span><span class="ss">&quot;Subaru&quot;</span><span class="p">,</span><span class="mi">1953</span><span class="p">,</span><span class="ss">&quot;Ebisu, Tokyo, Japan&quot;</span><span class="p">);</span>
+
+<span class="k">INSERT</span> <span class="k">INTO</span> <span class="n">model</span> <span class="p">(</span><span class="n">idBrand</span><span class="p">,</span><span class="n">modelName</span><span class="p">,</span><span class="n">generation</span><span class="p">,</span> <span class="n">productionYear</span><span class="p">,</span> <span class="n">doors</span><span class="p">,</span> <span class="n">seats</span><span class="p">,</span> <span class="n">maximumSpeed</span><span class="p">)</span>
+<span class="k">VALUES</span> <span class="p">(</span><span class="mi">1</span><span class="p">,</span><span class="ss">&quot;Passat&quot;</span><span class="p">,</span><span class="ss">&quot;Passat Alltrack (B8)&quot;</span><span class="p">,</span> <span class="mi">2015</span> <span class="p">,</span><span class="mi">5</span> <span class="p">,</span><span class="mi">5</span> <span class="p">,</span><span class="mi">220</span><span class="p">);</span>
+<span class="k">INSERT</span> <span class="k">INTO</span> <span class="n">model</span> <span class="p">(</span><span class="n">idBrand</span><span class="p">,</span><span class="n">modelName</span><span class="p">,</span><span class="n">generation</span><span class="p">,</span> <span class="n">productionYear</span><span class="p">,</span> <span class="n">doors</span><span class="p">,</span> <span class="n">seats</span><span class="p">,</span> <span class="n">maximumSpeed</span><span class="p">)</span>
+<span class="k">VALUES</span> <span class="p">(</span><span class="mi">1</span><span class="p">,</span><span class="ss">&quot;Touran&quot;</span><span class="p">,</span><span class="ss">&quot;    Touran II&quot;</span><span class="p">,</span> <span class="mi">2015</span> <span class="p">,</span><span class="mi">5</span> <span class="p">,</span><span class="mi">7</span> <span class="p">,</span><span class="mi">206</span><span class="p">);</span>
+<span class="k">INSERT</span> <span class="k">INTO</span> <span class="n">model</span> <span class="p">(</span><span class="n">idBrand</span><span class="p">,</span><span class="n">modelName</span><span class="p">,</span><span class="n">generation</span><span class="p">,</span> <span class="n">productionYear</span><span class="p">,</span> <span class="n">doors</span><span class="p">,</span> <span class="n">seats</span><span class="p">,</span> <span class="n">maximumSpeed</span><span class="p">)</span>
+<span class="k">VALUES</span> <span class="p">(</span><span class="mi">2</span><span class="p">,</span><span class="ss">&quot;A4&quot;</span><span class="p">,</span><span class="ss">&quot;A4 allroad (B9)&quot;</span><span class="p">,</span> <span class="mi">2016</span> <span class="p">,</span><span class="mi">5</span> <span class="p">,</span><span class="mi">5</span> <span class="p">,</span><span class="mi">231</span><span class="p">);</span>
+<span class="k">INSERT</span> <span class="k">INTO</span> <span class="n">model</span> <span class="p">(</span><span class="n">idBrand</span><span class="p">,</span><span class="n">modelName</span><span class="p">,</span><span class="n">generation</span><span class="p">,</span> <span class="n">productionYear</span><span class="p">,</span> <span class="n">doors</span><span class="p">,</span> <span class="n">seats</span><span class="p">,</span> <span class="n">maximumSpeed</span><span class="p">)</span>
+<span class="k">VALUES</span> <span class="p">(</span><span class="mi">3</span><span class="p">,</span><span class="ss">&quot;124&quot;</span><span class="p">,</span><span class="ss">&quot;124 Spider (2016)&quot;</span><span class="p">,</span><span class="mi">2016</span> <span class="p">,</span><span class="mi">2</span> <span class="p">,</span> <span class="mi">3</span><span class="p">,</span> <span class="mi">205</span><span class="p">);</span>
+<span class="k">INSERT</span> <span class="k">INTO</span> <span class="n">model</span> <span class="p">(</span><span class="n">idBrand</span><span class="p">,</span><span class="n">modelName</span><span class="p">,</span><span class="n">generation</span><span class="p">,</span> <span class="n">productionYear</span><span class="p">,</span> <span class="n">doors</span><span class="p">,</span> <span class="n">seats</span><span class="p">,</span> <span class="n">maximumSpeed</span><span class="p">)</span>
+<span class="k">VALUES</span> <span class="p">(</span><span class="mi">4</span><span class="p">,</span><span class="ss">&quot;Meriva B (facelift 2014)&quot;</span><span class="p">,</span><span class="ss">&quot;-&quot;</span><span class="p">,</span><span class="mi">2014</span> <span class="p">,</span><span class="mi">5</span> <span class="p">,</span> <span class="mi">5</span><span class="p">,</span> <span class="mi">198</span><span class="p">);</span>
+<span class="k">INSERT</span> <span class="k">INTO</span> <span class="n">model</span> <span class="p">(</span><span class="n">idBrand</span><span class="p">,</span><span class="n">modelName</span><span class="p">,</span><span class="n">generation</span><span class="p">,</span> <span class="n">productionYear</span><span class="p">,</span> <span class="n">doors</span><span class="p">,</span> <span class="n">seats</span><span class="p">,</span> <span class="n">maximumSpeed</span><span class="p">)</span>
+<span class="k">VALUES</span> <span class="p">(</span><span class="mi">4</span><span class="p">,</span><span class="ss">&quot;Speedster&quot;</span><span class="p">,</span><span class="ss">&quot;-&quot;</span><span class="p">,</span><span class="mi">2003</span> <span class="p">,</span><span class="mi">2</span> <span class="p">,</span> <span class="mi">2</span><span class="p">,</span> <span class="mi">225</span><span class="p">);</span>
+<span class="k">INSERT</span> <span class="k">INTO</span> <span class="n">model</span> <span class="p">(</span><span class="n">idBrand</span><span class="p">,</span><span class="n">modelName</span><span class="p">,</span><span class="n">generation</span><span class="p">,</span> <span class="n">productionYear</span><span class="p">,</span> <span class="n">doors</span><span class="p">,</span> <span class="n">seats</span><span class="p">,</span> <span class="n">maximumSpeed</span><span class="p">)</span>
+<span class="k">VALUES</span> <span class="p">(</span><span class="mi">5</span><span class="p">,</span><span class="ss">&quot;Bluebird Sylphy&quot;</span><span class="p">,</span><span class="ss">&quot;-&quot;</span><span class="p">,</span><span class="mi">2000</span> <span class="p">,</span><span class="mi">4</span> <span class="p">,</span> <span class="mi">5</span><span class="p">,</span> <span class="mi">201</span><span class="p">);</span>
+<span class="k">INSERT</span> <span class="k">INTO</span> <span class="n">model</span> <span class="p">(</span><span class="n">idBrand</span><span class="p">,</span><span class="n">modelName</span><span class="p">,</span><span class="n">generation</span><span class="p">,</span> <span class="n">productionYear</span><span class="p">,</span> <span class="n">doors</span><span class="p">,</span> <span class="n">seats</span><span class="p">,</span> <span class="n">maximumSpeed</span><span class="p">)</span>
+<span class="k">VALUES</span> <span class="p">(</span><span class="mi">5</span><span class="p">,</span><span class="ss">&quot;Bluebird (U14)&quot;</span><span class="p">,</span><span class="ss">&quot;14&quot;</span><span class="p">,</span><span class="mi">1998</span> <span class="p">,</span><span class="mi">4</span> <span class="p">,</span> <span class="mi">5</span><span class="p">,</span> <span class="mi">200</span><span class="p">);</span>
+</pre></div>
+</td></tr></table></div>
+<p>На этом этап создания базы данных окончен.</p>
 </div>
 </div>
 </div>
@@ -163,11 +247,9 @@
 <li><a class="reference internal" href="#">База данных MySQL</a><ul>
 <li><a class="reference internal" href="#id1">Проектирование базы данных</a></li>
 <li><a class="reference internal" href="#id2">Установка MySQL сервера</a></li>
-<li><a class="reference internal" href="#id4">Наполнение MySQL базы</a><ul>
-<li><a class="reference internal" href="#id5">Заголовок 3 уровня</a><ul>
-<li><a class="reference internal" href="#id6">Заголовок 4 уровня</a></li>
-</ul>
-</li>
+<li><a class="reference internal" href="#id4">Создание базы данных</a><ul>
+<li><a class="reference internal" href="#id5">Добавление таблиц</a></li>
+<li><a class="reference internal" href="#id6">Наполнение базы</a></li>
 </ul>
 </li>
 </ul>
