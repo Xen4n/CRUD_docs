@@ -1,3 +1,4 @@
+.. _mysqlinst:
 
 База данных MySQL
 ==================
@@ -31,7 +32,7 @@
 
 Диаграмма предложенной модели базы будет выглядеть так:
 
-.. image:: _static/diagram.png
+.. image:: _images/diagram.png
 	:height: 252px
 	:alt: Диаграмма базы данных
 	:align: center
@@ -49,7 +50,7 @@
 Во время установки подтверждаем лицезию. Далее выбираем режим установки Custom и жмем далее.
 На следующем окне отмечаем **MySQL Server** и **MySQL WorkBench** для своей разрядности системы.
 
-.. image:: _static/custom.png
+.. image:: _images/custom.png
 	:height: 252px
 	:alt: Диаграмма базы данных
 	:align: center
