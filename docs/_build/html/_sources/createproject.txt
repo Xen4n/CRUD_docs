@@ -26,8 +26,11 @@
        :alt: Project
        :align: center
 	   
+Редактирование зависимостей в pom.xml
+---------------------------------------
+	   
 На следующем шаге нам необходимо отредактировать ``pom.xml`` файл, указав правильные зависимости.
-Нижеуказанный код поместим между тегами ``</version>`` и ``</project>``:
+Ниже указанный код поместим между тегами ``</version>`` и ``</project>``:
 
 .. code-block:: xml
 	:linenos:
@@ -188,6 +191,9 @@
 Теперь добавим поддержку Spring: :menuselection:`Правой клавишей мыши по корню проекта --> ...Add Framework Support`.
 В Появившемся окне выбираем :menuselection:`Spring --> Spring MVC`. Должна быть выбрана метка **Use library**, жмем ОК.
 
+Настройка конфигурации проекта
+---------------------------------
+
 Теперь в папке Java создадим пакет ``com.scrud.configs``. В нём создадим новый класс ``WebConfig`` и заполним его следующим кодом:
 
 .. code-block:: java
@@ -299,6 +305,9 @@
 Мы сконфигурировали наш сервер. Осталось добавить контроллер, который будет выдавать ответ на запрос 
 и сам ответ, то есть страницу, которую увидет пользователь. 
 
+Создание контроллера
+----------------------
+
 Создадим новый пакет ``com.scrud.controllers`` в котором создадим класс ``HelloController``:
 
 .. code-block:: java
@@ -330,37 +339,148 @@
 		
 	}
 	
-После этого в папке Java создадим пакет ``com.scrud.config``, в нём создадим класс ``AppInit``:
+Добавление страницы
+---------------------
+	
+В директории **webapp** создадим новую дерикторию **pages**. В **pages** создадим дерикторию **page_components**.
+Теперь в **page_components** создадим новый **JSP** файл ``header.jsp`` и заполним его таким кодом:
 
-.. code-block:: java
+.. code-block:: jsp
 	:linenos:
+	
+	<%@ page contentType="text/html;charset=UTF-8" language="java" %>
+	<header>
+		<nav class="navbar navbar-inverse navbar-fixed-top">
+			<div class="container">
+				<div class="navbar-header">
+					<button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target="#navbar" aria-expanded="false" aria-controls="navbar">
+						<span class="sr-only">Toggle navigation</span>
+						<span class="icon-bar"></span>
+						<span class="icon-bar"></span>
+						<span class="icon-bar"></span>
+					</button>
+					<a class="navbar-brand" href="/">SCRUDproject</a>
+				</div>
+				<div id="navbar" class="collapse navbar-collapse">
+					<ul class="nav navbar-nav">
+						<li class="dropdown">
+							<a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button"
+							aria-haspopup="true" aria-expanded="false">Operations <span class="caret"></span>
+							</a>
+							<ul class="dropdown-menu">
+								<li><a href="/jdbc">JDBC</a></li>
+								<li role="separator" class="divider"></li>
+								<li><a href="/hibernate">Hibernate</a></li>
+								<li role="separator" class="divider"></li>
+								<li><a href="/jpa">JPA</a></li>
+							</ul>
+						</li>
+						<li><a href="/about">About</a></li>
+						<li><a href="/contact">Contact</a></li>
+					</ul>
+				</div><!--/.nav-collapse -->
+			</div>
+		</nav>
+	</header>
+	
+Это шапка, которая будет показываться на всех страницах сайта. Давайте добавим главную страницу. 
+В директории **pages** создадим файл ``index.jsp`` с содержанием:
 
-	package com.scrud.config;
+::
 	
-	import org.springframework.web.servlet.support.AbstractAnnotationConfigDispatcherServletInitializer;
+	<%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
+	<%@ page contentType="text/html;charset=UTF-8" language="java" %>
+	<html>
+	<head>
+		<link href="<c:url value="${pageContext.request.contextPath}/webjars/bootstrap/3.1.0/css/bootstrap.min.css" />" rel="stylesheet">
+		<link href="/resources/css/basic.css" rel="stylesheet">
+		<script src="<c:url value="${pageContext.request.contextPath}/webjars/jquery/1.9.0/jquery.min.js"  />"></script>
+		<script src="<c:url value="${pageContext.request.contextPath}/webjars/bootstrap/3.1.0/js/bootstrap.js"  />"></script>
+		<title>CRUD operations</title>
+	</head>
+	<body>
+		<c:import url="page_components/header.jsp"></c:import>
+		<div class="container" >
+			<div class="row">
+				<div class="col-lg-8 col-lg-offset-2">
+					<div class="jumbotron" id="index_jumbotron">
+						<div class="text-center"><h1>CRUD operations</h1></div>
+						<p class="lead text-center text-nowrap">CRUD is the 4 basic operations of data management: create, read, update, delete</p>
+					</div>
+					<div class="cols">
+						<div class="row">
+							<div class="col-lg-4">
+								<img class="img-rounded" src="/resources/img/jdbc.png" alt="jdbc logo" width="140" height="140">
+								<p>Java Database Connectivity (JDBC) is an application programming interface (API) for the programming language Java, that defines how a client may access a database.</p>
+								<p><a class="btn btn-primary" href="/jdbc" role="button">View JDBC &raquo;</a></p>
+							</div>
+							<div class="col-lg-4">
+								<img class="img-rounded" src="/resources/img/hiber.png" alt="hibernate logo" width="140" height="140">
+								<p>Hibernate ORM is framework for the Java language. It provides a framework for mapping an object-oriented domain model to a relational database.</p>
+								<p><a class="btn btn-primary" href="/hibernate" role="button">View Hibernate&raquo;</a></p>
+							</div>
+							<div class="col-lg-4">
+								<img class="img-rounded" src="/resources/img/jpa.png" alt="hibernate logo" width="140" height="140">
+								<p>The Java Persistence API (JPA) is a Java API specification that describes the management of relational data in applications using Java SE and Java EE.</p>
+								<p><a class="btn btn-primary" href="/jpa" role="button">View JPA &raquo;</a></p>
+							</div>
+						</div>
+					</div>
+				</div>
+			</div>
+		</div>
+	</body>
+	</html>
+
 	
-	public class AppInit extends AbstractAnnotationConfigDispatcherServletInitializer {
-		// Этот метод должен содержать конфигурации которые инициализируют Beans
-		// для инициализации бинов у нас использовалась аннотация @Bean
-		@Override
-		protected Class<?>[] getRootConfigClasses() {
-			return new Class<?>[]{
-					WebConfig.class
-			};
-		}
+Сборка проекта
+----------------
 	
-		// Тут добавляем конфигурацию, в которой инициализируем ViewResolver
-		@Override
-		protected Class<?>[] getServletConfigClasses() {
-	
-			return new Class<?>[]{
-					WebConfig.class
-			};
-		}
-	
-		@Override
-		protected String[] getServletMappings() {
-			return new String[]{"/"};
-		}
-	
-	}
+Теперь соберем наш проект. Для этого откроем окно **Maven Projects** возле правой границы IDE. 
+В функциях **Lifecycle** выполним скрипты **clean**, затем **install**. 
+
+.. image:: _static/proj_6.PNG
+       :height: 325px
+       :width: 638px
+       :scale: 100%
+       :alt: Modules 1
+       :align: center
+
+Теперь мы получили war файл,который мы будем деплоить на сервер.
+
+Деплой на Tomcat
+------------------
+
+Скачиваем сервер приложений Tomcat 8+ `отсюда <http://tomcat.apache.org/download-80.cgi>`_. 
+Устанавливаем его с конфигурациями по умолчанию.
+
+Теперь в IDE нажимаем в правом верхнем углу **стрелку вниз** и выбираем **Edit configurations**. В появившемся окне нажимаем **зеленый плюс**
+и выбираем :menuselection:`Tomcat --> Local`.
+
+.. image:: _static/proj_7.PNG
+       :height: 555px
+       :width: 465px
+       :scale: 100%
+       :alt: Modules 1
+       :align: center
+
+После чего во вкладке **Deployment** нажимаем :menuselection:`Add --> Artifact...`.
+
+.. image:: _static/proj_8.PNG
+       :height: 237px
+       :width: 811px
+       :scale: 100%
+       :alt: Modules 1
+       :align: center
+
+Выбираем **:war** , нажимаем ОК. Даем имя нашей конфигурации и подтверждаем её создание.
+Теперь запускаем созданную конфигурацию сервера.
+
+.. image:: _static/proj_9.PNG
+       :height: 101px
+       :width: 298px
+       :scale: 100%
+       :alt: Modules 1
+       :align: center
+	   
+Чтобы открыть созданный сайт, в строке браузера пропишем путь: ``localhost:8080``.

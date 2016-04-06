@@ -59,8 +59,10 @@
 <p>На следующей странице в поле <strong>GroupId</strong> вводим название фирмы (группы), а также артефакт проекта в поле <strong>ArtifactId</strong>.</p>
 <p>Далее вводим название проекта и место расположения на диске. После этого откроется окно проекта. Структура проекта будет выглядеть примерно так:</p>
 <a class="reference internal image-reference" href="_images/proj_2.PNG"><img alt="Project" class="align-center" src="_images/proj_2.PNG" style="width: 479.0px; height: 300.0px;" /></a>
+<div class="section" id="pom-xml">
+<h2>Редактирование зависимостей в pom.xml<a class="headerlink" href="#pom-xml" title="Ссылка на этот заголовок">¶</a></h2>
 <p>На следующем шаге нам необходимо отредактировать <code class="docutils literal"><span class="pre">pom.xml</span></code> файл, указав правильные зависимости.
-Нижеуказанный код поместим между тегами <code class="docutils literal"><span class="pre">&lt;/version&gt;</span></code> и <code class="docutils literal"><span class="pre">&lt;/project&gt;</span></code>:</p>
+Ниже указанный код поместим между тегами <code class="docutils literal"><span class="pre">&lt;/version&gt;</span></code> и <code class="docutils literal"><span class="pre">&lt;/project&gt;</span></code>:</p>
 <div class="highlight-xml"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre>  1
   2
   3
@@ -368,6 +370,9 @@
 </td></tr></table></div>
 <p>Теперь добавим поддержку Spring: <span class="menuselection">Правой клавишей мыши по корню проекта ‣ ...Add Framework Support</span>.
 В Появившемся окне выбираем <span class="menuselection">Spring ‣ Spring MVC</span>. Должна быть выбрана метка <strong>Use library</strong>, жмем ОК.</p>
+</div>
+<div class="section" id="id2">
+<h2>Настройка конфигурации проекта<a class="headerlink" href="#id2" title="Ссылка на этот заголовок">¶</a></h2>
 <p>Теперь в папке Java создадим пакет <code class="docutils literal"><span class="pre">com.scrud.configs</span></code>. В нём создадим новый класс <code class="docutils literal"><span class="pre">WebConfig</span></code> и заполним его следующим кодом:</p>
 <div class="highlight-java"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre> 1
  2
@@ -513,6 +518,9 @@
 <p>Теперь просто нажимаем <strong>Apply</strong>  и <strong>OK</strong>.
 Мы сконфигурировали наш сервер. Осталось добавить контроллер, который будет выдавать ответ на запрос
 и сам ответ, то есть страницу, которую увидет пользователь.</p>
+</div>
+<div class="section" id="id3">
+<h2>Создание контроллера<a class="headerlink" href="#id3" title="Ссылка на этот заголовок">¶</a></h2>
 <p>Создадим новый пакет <code class="docutils literal"><span class="pre">com.scrud.controllers</span></code> в котором создадим класс <code class="docutils literal"><span class="pre">HelloController</span></code>:</p>
 <div class="highlight-java"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre> 1
  2
@@ -565,8 +573,12 @@
 <span class="o">}</span>
 </pre></div>
 </td></tr></table></div>
-<p>После этого в папке Java создадим пакет <code class="docutils literal"><span class="pre">com.scrud.config</span></code>, в нём создадим класс <code class="docutils literal"><span class="pre">AppInit</span></code>:</p>
-<div class="highlight-java"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre> 1
+</div>
+<div class="section" id="id4">
+<h2>Добавление страницы<a class="headerlink" href="#id4" title="Ссылка на этот заголовок">¶</a></h2>
+<p>В директории <strong>webapp</strong> создадим новую дерикторию <strong>pages</strong>. В <strong>pages</strong> создадим дерикторию <strong>page_components</strong>.
+Теперь в <strong>page_components</strong> создадим новый <strong>JSP</strong> файл <code class="docutils literal"><span class="pre">header.jsp</span></code> и заполним его таким кодом:</p>
+<div class="highlight-jsp"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre> 1
  2
  3
  4
@@ -594,37 +606,116 @@
 26
 27
 28
-29</pre></div></td><td class="code"><div class="highlight"><pre><span></span><span class="kn">package</span> <span class="nn">com.scrud.config</span><span class="o">;</span>
-
-<span class="kn">import</span> <span class="nn">org.springframework.web.servlet.support.AbstractAnnotationConfigDispatcherServletInitializer</span><span class="o">;</span>
-
-<span class="kd">public</span> <span class="kd">class</span> <span class="nc">AppInit</span> <span class="kd">extends</span> <span class="n">AbstractAnnotationConfigDispatcherServletInitializer</span> <span class="o">{</span>
-        <span class="c1">// Этот метод должен содержать конфигурации которые инициализируют Beans</span>
-        <span class="c1">// для инициализации бинов у нас использовалась аннотация @Bean</span>
-        <span class="nd">@Override</span>
-        <span class="kd">protected</span> <span class="n">Class</span><span class="o">&lt;?&gt;[]</span> <span class="n">getRootConfigClasses</span><span class="o">()</span> <span class="o">{</span>
-                <span class="k">return</span> <span class="k">new</span> <span class="n">Class</span><span class="o">&lt;?&gt;[]{</span>
-                                <span class="n">WebConfig</span><span class="o">.</span><span class="na">class</span>
-                <span class="o">};</span>
-        <span class="o">}</span>
-
-        <span class="c1">// Тут добавляем конфигурацию, в которой инициализируем ViewResolver</span>
-        <span class="nd">@Override</span>
-        <span class="kd">protected</span> <span class="n">Class</span><span class="o">&lt;?&gt;[]</span> <span class="n">getServletConfigClasses</span><span class="o">()</span> <span class="o">{</span>
-
-                <span class="k">return</span> <span class="k">new</span> <span class="n">Class</span><span class="o">&lt;?&gt;[]{</span>
-                                <span class="n">WebConfig</span><span class="o">.</span><span class="na">class</span>
-                <span class="o">};</span>
-        <span class="o">}</span>
-
-        <span class="nd">@Override</span>
-        <span class="kd">protected</span> <span class="n">String</span><span class="o">[]</span> <span class="nf">getServletMappings</span><span class="o">()</span> <span class="o">{</span>
-                <span class="k">return</span> <span class="k">new</span> <span class="n">String</span><span class="o">[]{</span><span class="s">&quot;/&quot;</span><span class="o">};</span>
-        <span class="o">}</span>
-
-<span class="o">}</span>
+29
+30
+31
+32
+33
+34</pre></div></td><td class="code"><div class="highlight"><pre><span></span><span class="k">&lt;%@</span> <span class="n">page</span> <span class="n">contentType</span><span class="o">=</span><span class="s">&quot;text/html;charset=UTF-8&quot;</span> <span class="n">language</span><span class="o">=</span><span class="s">&quot;java&quot;</span> <span class="k">%&gt;</span>
+<span class="nt">&lt;header&gt;</span>
+        <span class="nt">&lt;nav</span> <span class="na">class=</span><span class="s">&quot;navbar navbar-inverse navbar-fixed-top&quot;</span><span class="nt">&gt;</span>
+                <span class="nt">&lt;div</span> <span class="na">class=</span><span class="s">&quot;container&quot;</span><span class="nt">&gt;</span>
+                        <span class="nt">&lt;div</span> <span class="na">class=</span><span class="s">&quot;navbar-header&quot;</span><span class="nt">&gt;</span>
+                                <span class="nt">&lt;button</span> <span class="na">type=</span><span class="s">&quot;button&quot;</span> <span class="na">class=</span><span class="s">&quot;navbar-toggle collapsed&quot;</span> <span class="na">data-toggle=</span><span class="s">&quot;collapse&quot;</span> <span class="na">data-target=</span><span class="s">&quot;#navbar&quot;</span> <span class="na">aria-expanded=</span><span class="s">&quot;false&quot;</span> <span class="na">aria-controls=</span><span class="s">&quot;navbar&quot;</span><span class="nt">&gt;</span>
+                                        <span class="nt">&lt;span</span> <span class="na">class=</span><span class="s">&quot;sr-only&quot;</span><span class="nt">&gt;</span>Toggle navigation<span class="nt">&lt;/span&gt;</span>
+                                        <span class="nt">&lt;span</span> <span class="na">class=</span><span class="s">&quot;icon-bar&quot;</span><span class="nt">&gt;&lt;/span&gt;</span>
+                                        <span class="nt">&lt;span</span> <span class="na">class=</span><span class="s">&quot;icon-bar&quot;</span><span class="nt">&gt;&lt;/span&gt;</span>
+                                        <span class="nt">&lt;span</span> <span class="na">class=</span><span class="s">&quot;icon-bar&quot;</span><span class="nt">&gt;&lt;/span&gt;</span>
+                                <span class="nt">&lt;/button&gt;</span>
+                                <span class="nt">&lt;a</span> <span class="na">class=</span><span class="s">&quot;navbar-brand&quot;</span> <span class="na">href=</span><span class="s">&quot;/&quot;</span><span class="nt">&gt;</span>SCRUDproject<span class="nt">&lt;/a&gt;</span>
+                        <span class="nt">&lt;/div&gt;</span>
+                        <span class="nt">&lt;div</span> <span class="na">id=</span><span class="s">&quot;navbar&quot;</span> <span class="na">class=</span><span class="s">&quot;collapse navbar-collapse&quot;</span><span class="nt">&gt;</span>
+                                <span class="nt">&lt;ul</span> <span class="na">class=</span><span class="s">&quot;nav navbar-nav&quot;</span><span class="nt">&gt;</span>
+                                        <span class="nt">&lt;li</span> <span class="na">class=</span><span class="s">&quot;dropdown&quot;</span><span class="nt">&gt;</span>
+                                                <span class="nt">&lt;a</span> <span class="na">href=</span><span class="s">&quot;#&quot;</span> <span class="na">class=</span><span class="s">&quot;dropdown-toggle&quot;</span> <span class="na">data-toggle=</span><span class="s">&quot;dropdown&quot;</span> <span class="na">role=</span><span class="s">&quot;button&quot;</span>
+                                                <span class="na">aria-haspopup=</span><span class="s">&quot;true&quot;</span> <span class="na">aria-expanded=</span><span class="s">&quot;false&quot;</span><span class="nt">&gt;</span>Operations <span class="nt">&lt;span</span> <span class="na">class=</span><span class="s">&quot;caret&quot;</span><span class="nt">&gt;&lt;/span&gt;</span>
+                                                <span class="nt">&lt;/a&gt;</span>
+                                                <span class="nt">&lt;ul</span> <span class="na">class=</span><span class="s">&quot;dropdown-menu&quot;</span><span class="nt">&gt;</span>
+                                                        <span class="nt">&lt;li&gt;&lt;a</span> <span class="na">href=</span><span class="s">&quot;/jdbc&quot;</span><span class="nt">&gt;</span>JDBC<span class="nt">&lt;/a&gt;&lt;/li&gt;</span>
+                                                        <span class="nt">&lt;li</span> <span class="na">role=</span><span class="s">&quot;separator&quot;</span> <span class="na">class=</span><span class="s">&quot;divider&quot;</span><span class="nt">&gt;&lt;/li&gt;</span>
+                                                        <span class="nt">&lt;li&gt;&lt;a</span> <span class="na">href=</span><span class="s">&quot;/hibernate&quot;</span><span class="nt">&gt;</span>Hibernate<span class="nt">&lt;/a&gt;&lt;/li&gt;</span>
+                                                        <span class="nt">&lt;li</span> <span class="na">role=</span><span class="s">&quot;separator&quot;</span> <span class="na">class=</span><span class="s">&quot;divider&quot;</span><span class="nt">&gt;&lt;/li&gt;</span>
+                                                        <span class="nt">&lt;li&gt;&lt;a</span> <span class="na">href=</span><span class="s">&quot;/jpa&quot;</span><span class="nt">&gt;</span>JPA<span class="nt">&lt;/a&gt;&lt;/li&gt;</span>
+                                                <span class="nt">&lt;/ul&gt;</span>
+                                        <span class="nt">&lt;/li&gt;</span>
+                                        <span class="nt">&lt;li&gt;&lt;a</span> <span class="na">href=</span><span class="s">&quot;/about&quot;</span><span class="nt">&gt;</span>About<span class="nt">&lt;/a&gt;&lt;/li&gt;</span>
+                                        <span class="nt">&lt;li&gt;&lt;a</span> <span class="na">href=</span><span class="s">&quot;/contact&quot;</span><span class="nt">&gt;</span>Contact<span class="nt">&lt;/a&gt;&lt;/li&gt;</span>
+                                <span class="nt">&lt;/ul&gt;</span>
+                        <span class="nt">&lt;/div&gt;</span><span class="c">&lt;!--/.nav-collapse --&gt;</span>
+                <span class="nt">&lt;/div&gt;</span>
+        <span class="nt">&lt;/nav&gt;</span>
+<span class="nt">&lt;/header&gt;</span>
 </pre></div>
 </td></tr></table></div>
+<p>Это шапка, которая будет показываться на всех страницах сайта. Давайте добавим главную страницу.
+В директории <strong>pages</strong> создадим файл <code class="docutils literal"><span class="pre">index.jsp</span></code> с содержанием:</p>
+<div class="highlight-default"><div class="highlight"><pre><span></span>&lt;%@ taglib prefix=&quot;c&quot; uri=&quot;http://java.sun.com/jsp/jstl/core&quot; %&gt;
+&lt;%@ page contentType=&quot;text/html;charset=UTF-8&quot; language=&quot;java&quot; %&gt;
+&lt;html&gt;
+&lt;head&gt;
+        &lt;link href=&quot;&lt;c:url value=&quot;${pageContext.request.contextPath}/webjars/bootstrap/3.1.0/css/bootstrap.min.css&quot; /&gt;&quot; rel=&quot;stylesheet&quot;&gt;
+        &lt;link href=&quot;/resources/css/basic.css&quot; rel=&quot;stylesheet&quot;&gt;
+        &lt;script src=&quot;&lt;c:url value=&quot;${pageContext.request.contextPath}/webjars/jquery/1.9.0/jquery.min.js&quot;  /&gt;&quot;&gt;&lt;/script&gt;
+        &lt;script src=&quot;&lt;c:url value=&quot;${pageContext.request.contextPath}/webjars/bootstrap/3.1.0/js/bootstrap.js&quot;  /&gt;&quot;&gt;&lt;/script&gt;
+        &lt;title&gt;CRUD operations&lt;/title&gt;
+&lt;/head&gt;
+&lt;body&gt;
+        &lt;c:import url=&quot;page_components/header.jsp&quot;&gt;&lt;/c:import&gt;
+        &lt;div class=&quot;container&quot; &gt;
+                &lt;div class=&quot;row&quot;&gt;
+                        &lt;div class=&quot;col-lg-8 col-lg-offset-2&quot;&gt;
+                                &lt;div class=&quot;jumbotron&quot; id=&quot;index_jumbotron&quot;&gt;
+                                        &lt;div class=&quot;text-center&quot;&gt;&lt;h1&gt;CRUD operations&lt;/h1&gt;&lt;/div&gt;
+                                        &lt;p class=&quot;lead text-center text-nowrap&quot;&gt;CRUD is the 4 basic operations of data management: create, read, update, delete&lt;/p&gt;
+                                &lt;/div&gt;
+                                &lt;div class=&quot;cols&quot;&gt;
+                                        &lt;div class=&quot;row&quot;&gt;
+                                                &lt;div class=&quot;col-lg-4&quot;&gt;
+                                                        &lt;img class=&quot;img-rounded&quot; src=&quot;/resources/img/jdbc.png&quot; alt=&quot;jdbc logo&quot; width=&quot;140&quot; height=&quot;140&quot;&gt;
+                                                        &lt;p&gt;Java Database Connectivity (JDBC) is an application programming interface (API) for the programming language Java, that defines how a client may access a database.&lt;/p&gt;
+                                                        &lt;p&gt;&lt;a class=&quot;btn btn-primary&quot; href=&quot;/jdbc&quot; role=&quot;button&quot;&gt;View JDBC &amp;raquo;&lt;/a&gt;&lt;/p&gt;
+                                                &lt;/div&gt;
+                                                &lt;div class=&quot;col-lg-4&quot;&gt;
+                                                        &lt;img class=&quot;img-rounded&quot; src=&quot;/resources/img/hiber.png&quot; alt=&quot;hibernate logo&quot; width=&quot;140&quot; height=&quot;140&quot;&gt;
+                                                        &lt;p&gt;Hibernate ORM is framework for the Java language. It provides a framework for mapping an object-oriented domain model to a relational database.&lt;/p&gt;
+                                                        &lt;p&gt;&lt;a class=&quot;btn btn-primary&quot; href=&quot;/hibernate&quot; role=&quot;button&quot;&gt;View Hibernate&amp;raquo;&lt;/a&gt;&lt;/p&gt;
+                                                &lt;/div&gt;
+                                                &lt;div class=&quot;col-lg-4&quot;&gt;
+                                                        &lt;img class=&quot;img-rounded&quot; src=&quot;/resources/img/jpa.png&quot; alt=&quot;hibernate logo&quot; width=&quot;140&quot; height=&quot;140&quot;&gt;
+                                                        &lt;p&gt;The Java Persistence API (JPA) is a Java API specification that describes the management of relational data in applications using Java SE and Java EE.&lt;/p&gt;
+                                                        &lt;p&gt;&lt;a class=&quot;btn btn-primary&quot; href=&quot;/jpa&quot; role=&quot;button&quot;&gt;View JPA &amp;raquo;&lt;/a&gt;&lt;/p&gt;
+                                                &lt;/div&gt;
+                                        &lt;/div&gt;
+                                &lt;/div&gt;
+                        &lt;/div&gt;
+                &lt;/div&gt;
+        &lt;/div&gt;
+&lt;/body&gt;
+&lt;/html&gt;
+</pre></div>
+</div>
+</div>
+<div class="section" id="id5">
+<h2>Сборка проекта<a class="headerlink" href="#id5" title="Ссылка на этот заголовок">¶</a></h2>
+<p>Теперь соберем наш проект. Для этого откроем окно <strong>Maven Projects</strong> возле правой границы IDE.
+В функциях <strong>Lifecycle</strong> выполним скрипты <strong>clean</strong>, затем <strong>install</strong>.</p>
+<a class="reference internal image-reference" href="_images/proj_6.PNG"><img alt="Modules 1" class="align-center" src="_images/proj_6.PNG" style="width: 638.0px; height: 325.0px;" /></a>
+<p>Теперь мы получили war файл,который мы будем деплоить на сервер.</p>
+</div>
+<div class="section" id="tomcat">
+<h2>Деплой на Tomcat<a class="headerlink" href="#tomcat" title="Ссылка на этот заголовок">¶</a></h2>
+<p>Скачиваем сервер приложений Tomcat 8+ <a class="reference external" href="http://tomcat.apache.org/download-80.cgi">отсюда</a>.
+Устанавливаем его с конфигурациями по умолчанию.</p>
+<p>Теперь в IDE нажимаем в правом верхнем углу <strong>стрелку вниз</strong> и выбираем <strong>Edit configurations</strong>. В появившемся окне нажимаем <strong>зеленый плюс</strong>
+и выбираем <span class="menuselection">Tomcat ‣ Local</span>.</p>
+<a class="reference internal image-reference" href="_images/proj_7.PNG"><img alt="Modules 1" class="align-center" src="_images/proj_7.PNG" style="width: 465.0px; height: 555.0px;" /></a>
+<p>После чего во вкладке <strong>Deployment</strong> нажимаем <span class="menuselection">Add ‣ Artifact...</span>.</p>
+<a class="reference internal image-reference" href="_images/proj_8.PNG"><img alt="Modules 1" class="align-center" src="_images/proj_8.PNG" style="width: 811.0px; height: 237.0px;" /></a>
+<p>Выбираем <strong>:war</strong> , нажимаем ОК. Даем имя нашей конфигурации и подтверждаем её создание.
+Теперь запускаем созданную конфигурацию сервера.</p>
+<a class="reference internal image-reference" href="_images/proj_9.PNG"><img alt="Modules 1" class="align-center" src="_images/proj_9.PNG" style="width: 298.0px; height: 101.0px;" /></a>
+<p>Чтобы открыть созданный сайт, в строке браузера пропишем путь: <code class="docutils literal"><span class="pre">localhost:8080</span></code>.</p>
+</div>
 </div>
 
 
@@ -633,6 +724,19 @@
       </div>
       <div class="sphinxsidebar" role="navigation" aria-label="main navigation">
         <div class="sphinxsidebarwrapper">
+  <h3><a href="index.html">Оглавление</a></h3>
+  <ul>
+<li><a class="reference internal" href="#">Создание проекта</a><ul>
+<li><a class="reference internal" href="#pom-xml">Редактирование зависимостей в pom.xml</a></li>
+<li><a class="reference internal" href="#id2">Настройка конфигурации проекта</a></li>
+<li><a class="reference internal" href="#id3">Создание контроллера</a></li>
+<li><a class="reference internal" href="#id4">Добавление страницы</a></li>
+<li><a class="reference internal" href="#id5">Сборка проекта</a></li>
+<li><a class="reference internal" href="#tomcat">Деплой на Tomcat</a></li>
+</ul>
+</li>
+</ul>
+
   <h4>Предыдущий раздел</h4>
   <p class="topless"><a href="mysqlinst.html"
                         title="предыдущая глава">База данных MySQL</a></p>
