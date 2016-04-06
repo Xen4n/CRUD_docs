@@ -57,9 +57,124 @@
 <p>Запускаем IntelliJ IDEA и создаем новый проект. В окне выбора типа проекта указываем Maven.</p>
 <a class="reference internal image-reference" href="_images/proj_1.PNG"><img alt="alternate text" class="align-center" src="_images/proj_1.PNG" style="width: 738.0px; height: 657.0px;" /></a>
 <p>На следующей странице в поле <strong>GroupId</strong> вводим название фирмы (группы), а также артефакт проекта в поле <strong>ArtifactId</strong>.</p>
-<p>Далее вводим название проекта и место расположения на диске.</p>
-<p>После чего откроется окно проекта. Структура проекта будет выглядеть примерно так:</p>
-<a class="reference internal image-reference" href="_images/proj_1.PNG"><img alt="alternate text" class="align-center" src="_images/proj_1.PNG" style="width: 479.0px; height: 300.0px;" /></a>
+<p>Далее вводим название проекта и место расположения на диске. После этого откроется окно проекта. Структура проекта будет выглядеть примерно так:</p>
+<a class="reference internal image-reference" href="_images/proj_2.PNG"><img alt="alternate text" class="align-center" src="_images/proj_2.PNG" style="width: 479.0px; height: 300.0px;" /></a>
+<p>Теперь добавим поддержку Spring:</p>
+<blockquote>
+<div><span class="menuselection">Правой клавишей мыши по корню проекта ‣ ...Add Framework Support</span></div></blockquote>
+<p>В Появившеся окне выбираем <span class="menuselection">Spring ‣ Spring MVC</span>. Указываем метку <strong>Download</strong> и жмем ОК.</p>
+<p>Теперь в папке Java создадим пакет <code class="docutils literal"><span class="pre">com.scrud.controllers</span></code>, в котором создадим класс <code class="docutils literal"><span class="pre">HelloController</span></code>:</p>
+<div class="highlight-java"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre> 1
+ 2
+ 3
+ 4
+ 5
+ 6
+ 7
+ 8
+ 9
+10
+11
+12
+13
+14
+15
+16
+17
+18
+19
+20
+21
+22
+23
+24
+25</pre></div></td><td class="code"><div class="highlight"><pre><span></span><span class="kn">package</span> <span class="nn">com.scrud.controllers</span><span class="o">;</span>
+
+        <span class="n">mport</span> <span class="n">org</span><span class="o">.</span><span class="na">springframework</span><span class="o">.</span><span class="na">stereotype</span><span class="o">.</span><span class="na">Controller</span><span class="o">;</span>
+        <span class="n">mport</span> <span class="n">org</span><span class="o">.</span><span class="na">springframework</span><span class="o">.</span><span class="na">ui</span><span class="o">.</span><span class="na">ModelMap</span><span class="o">;</span>
+        <span class="n">mport</span> <span class="n">org</span><span class="o">.</span><span class="na">springframework</span><span class="o">.</span><span class="na">web</span><span class="o">.</span><span class="na">bind</span><span class="o">.</span><span class="na">annotation</span><span class="o">.</span><span class="na">RequestMapping</span><span class="o">;</span>
+        <span class="n">mport</span> <span class="n">org</span><span class="o">.</span><span class="na">springframework</span><span class="o">.</span><span class="na">web</span><span class="o">.</span><span class="na">bind</span><span class="o">.</span><span class="na">annotation</span><span class="o">.</span><span class="na">RequestMethod</span><span class="o">;</span>
+
+        <span class="nd">@Controller</span>
+        <span class="n">ublic</span> <span class="kd">class</span> <span class="nc">HelloController</span> <span class="o">{</span>
+
+
+                <span class="nd">@RequestMapping</span><span class="o">(</span><span class="n">value</span> <span class="o">=</span> <span class="s">&quot;/&quot;</span><span class="o">,</span> <span class="n">method</span> <span class="o">=</span> <span class="n">RequestMethod</span><span class="o">.</span><span class="na">GET</span><span class="o">)</span>
+                <span class="kd">public</span> <span class="n">String</span> <span class="nf">printWelcome</span><span class="o">(</span><span class="n">ModelMap</span> <span class="n">model</span><span class="o">)</span> <span class="o">{</span>
+                        <span class="k">return</span> <span class="s">&quot;index&quot;</span><span class="o">;</span>
+
+                <span class="o">}</span>
+
+                <span class="nd">@RequestMapping</span><span class="o">(</span><span class="n">value</span> <span class="o">=</span> <span class="s">&quot;/about&quot;</span><span class="o">,</span> <span class="n">method</span> <span class="o">=</span> <span class="n">RequestMethod</span><span class="o">.</span><span class="na">GET</span><span class="o">)</span>
+                <span class="kd">public</span> <span class="n">String</span> <span class="nf">printJpa</span><span class="o">(</span><span class="n">ModelMap</span> <span class="n">model</span><span class="o">)</span> <span class="o">{</span>
+
+                        <span class="k">return</span> <span class="s">&quot;about&quot;</span><span class="o">;</span>
+
+                <span class="o">}</span>
+
+<span class="o">}</span>
+</pre></div>
+</td></tr></table></div>
+<p>После этого в папке Java создадим пакет <code class="docutils literal"><span class="pre">com.scrud.config</span></code>, в нём создадим класс <code class="docutils literal"><span class="pre">AppInit</span></code>:</p>
+<div class="highlight-java"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre> 1
+ 2
+ 3
+ 4
+ 5
+ 6
+ 7
+ 8
+ 9
+10
+11
+12
+13
+14
+15
+16
+17
+18
+19
+20
+21
+22
+23
+24
+25
+26
+27
+28
+29</pre></div></td><td class="code"><div class="highlight"><pre><span></span><span class="kn">package</span> <span class="nn">com.scrud.config</span><span class="o">;</span>
+
+<span class="kn">import</span> <span class="nn">org.springframework.web.servlet.support.AbstractAnnotationConfigDispatcherServletInitializer</span><span class="o">;</span>
+
+<span class="kd">public</span> <span class="kd">class</span> <span class="nc">AppInit</span> <span class="kd">extends</span> <span class="n">AbstractAnnotationConfigDispatcherServletInitializer</span> <span class="o">{</span>
+        <span class="c1">// Этот метод должен содержать конфигурации которые инициализируют Beans</span>
+        <span class="c1">// для инициализации бинов у нас использовалась аннотация @Bean</span>
+        <span class="nd">@Override</span>
+        <span class="kd">protected</span> <span class="n">Class</span><span class="o">&lt;?&gt;[]</span> <span class="n">getRootConfigClasses</span><span class="o">()</span> <span class="o">{</span>
+                <span class="k">return</span> <span class="k">new</span> <span class="n">Class</span><span class="o">&lt;?&gt;[]{</span>
+                                <span class="n">WebConfig</span><span class="o">.</span><span class="na">class</span>
+                <span class="o">};</span>
+        <span class="o">}</span>
+
+        <span class="c1">// Тут добавляем конфигурацию, в которой инициализируем ViewResolver</span>
+        <span class="nd">@Override</span>
+        <span class="kd">protected</span> <span class="n">Class</span><span class="o">&lt;?&gt;[]</span> <span class="n">getServletConfigClasses</span><span class="o">()</span> <span class="o">{</span>
+
+                <span class="k">return</span> <span class="k">new</span> <span class="n">Class</span><span class="o">&lt;?&gt;[]{</span>
+                                <span class="n">WebConfig</span><span class="o">.</span><span class="na">class</span>
+                <span class="o">};</span>
+        <span class="o">}</span>
+
+        <span class="nd">@Override</span>
+        <span class="kd">protected</span> <span class="n">String</span><span class="o">[]</span> <span class="nf">getServletMappings</span><span class="o">()</span> <span class="o">{</span>
+                <span class="k">return</span> <span class="k">new</span> <span class="n">String</span><span class="o">[]{</span><span class="s">&quot;/&quot;</span><span class="o">};</span>
+        <span class="o">}</span>
+
+<span class="o">}</span>
+</pre></div>
+</td></tr></table></div>
 </div>
 
 
