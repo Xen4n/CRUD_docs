@@ -1,0 +1,554 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+
+<html xmlns="http://www.w3.org/1999/xhtml" lang="ru">
+  <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    
+    <title>Наполнение сервера &mdash; Документация CRUD_docs 1</title>
+    
+    <link rel="stylesheet" href="_static/classic.css" type="text/css" />
+    <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
+    
+    <script type="text/javascript">
+      var DOCUMENTATION_OPTIONS = {
+        URL_ROOT:    './',
+        VERSION:     '1',
+        COLLAPSE_INDEX: false,
+        FILE_SUFFIX: '.html',
+        HAS_SOURCE:  true
+      };
+    </script>
+    <script type="text/javascript" src="_static/jquery.js"></script>
+    <script type="text/javascript" src="_static/underscore.js"></script>
+    <script type="text/javascript" src="_static/doctools.js"></script>
+    <script type="text/javascript" src="_static/translations.js"></script>
+    <link rel="top" title="Документация CRUD_docs 1" href="index.html" />
+    <link rel="prev" title="Создание проекта" href="createproject.html" /> 
+  </head>
+  <body role="document">
+    <div class="related" role="navigation" aria-label="related navigation">
+      <h3>Навигация</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="genindex.html" title="Алфавитный указатель"
+             accesskey="I">указатель</a></li>
+        <li class="right" >
+          <a href="createproject.html" title="Создание проекта"
+             accesskey="P">назад</a> |</li>
+        <li class="nav-item nav-item-0"><a href="index.html">Документация CRUD_docs 1</a> &raquo;</li> 
+      </ul>
+    </div>  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          <div class="body" role="main">
+            
+  <div class="section" id="server-base">
+<span id="id1"></span><h1>Наполнение сервера<a class="headerlink" href="#server-base" title="Ссылка на этот заголовок">¶</a></h1>
+<p>После настройки сервера нам нужно привязать к нему ранее созданную базу.</p>
+<div class="section" id="id2">
+<h2>Привязка к базе<a class="headerlink" href="#id2" title="Ссылка на этот заголовок">¶</a></h2>
+<p>В директории <strong>main</strong> -&gt; <strong>resources</strong> создадим файл <code class="docutils literal"><span class="pre">application.properties</span></code> и запишем в него
+конфигурацию доступа к нашей базе MySQL:</p>
+<div class="highlight-default"><div class="highlight"><pre><span></span><span class="n">jdbc</span><span class="o">.</span><span class="n">driverClassName</span> <span class="o">=</span> <span class="n">com</span><span class="o">.</span><span class="n">mysql</span><span class="o">.</span><span class="n">jdbc</span><span class="o">.</span><span class="n">Driver</span>
+<span class="n">jdbc</span><span class="o">.</span><span class="n">url</span> <span class="o">=</span> <span class="n">jdbc</span><span class="p">:</span><span class="n">mysql</span><span class="p">:</span><span class="o">//</span><span class="n">localhost</span><span class="p">:</span><span class="mi">3306</span><span class="o">/</span><span class="n">cars_db</span>
+<span class="n">jdbc</span><span class="o">.</span><span class="n">username</span> <span class="o">=</span> <span class="n">root</span>
+<span class="n">jdbc</span><span class="o">.</span><span class="n">password</span> <span class="o">=</span> <span class="mi">0000</span>
+</pre></div>
+</div>
+<p>Теперь укажем эти настройки серверу. В пакете <code class="docutils literal"><span class="pre">com.scrud.config</span></code> создадим класс <code class="docutils literal"><span class="pre">DataSourceConfig</span></code>:</p>
+<div class="highlight-java"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre> 1
+ 2
+ 3
+ 4
+ 5
+ 6
+ 7
+ 8
+ 9
+10
+11
+12
+13
+14
+15
+16
+17
+18
+19
+20
+21
+22
+23
+24
+25
+26
+27</pre></div></td><td class="code"><div class="highlight"><pre><span></span><span class="kn">package</span> <span class="nn">com.scrud.config</span><span class="o">;</span>
+
+<span class="kn">import</span> <span class="nn">org.springframework.beans.factory.annotation.Autowired</span><span class="o">;</span>
+<span class="kn">import</span> <span class="nn">org.springframework.context.annotation.Bean</span><span class="o">;</span>
+<span class="kn">import</span> <span class="nn">org.springframework.context.annotation.Configuration</span><span class="o">;</span>
+<span class="kn">import</span> <span class="nn">org.springframework.context.annotation.PropertySource</span><span class="o">;</span>
+<span class="kn">import</span> <span class="nn">org.springframework.core.env.Environment</span><span class="o">;</span>
+<span class="kn">import</span> <span class="nn">org.springframework.jdbc.datasource.DriverManagerDataSource</span><span class="o">;</span>
+<span class="kn">import</span> <span class="nn">javax.sql.DataSource</span><span class="o">;</span>
+
+<span class="nd">@Configuration</span>
+<span class="nd">@PropertySource</span><span class="o">(</span><span class="n">value</span> <span class="o">=</span> <span class="o">{</span><span class="s">&quot;classpath:application.properties&quot;</span><span class="o">})</span>
+<span class="kd">public</span> <span class="kd">class</span> <span class="nc">DataSourceConfig</span> <span class="o">{</span>
+        <span class="nd">@Autowired</span>
+        <span class="kd">private</span> <span class="n">Environment</span> <span class="n">environment</span><span class="o">;</span>
+
+        <span class="nd">@Bean</span>
+        <span class="kd">public</span> <span class="n">DataSource</span> <span class="nf">getDataSource</span><span class="o">()</span> <span class="o">{</span>
+                <span class="n">DriverManagerDataSource</span> <span class="n">dataSource</span> <span class="o">=</span> <span class="k">new</span> <span class="n">DriverManagerDataSource</span><span class="o">();</span>
+                <span class="n">dataSource</span><span class="o">.</span><span class="na">setDriverClassName</span><span class="o">(</span><span class="n">environment</span><span class="o">.</span><span class="na">getRequiredProperty</span><span class="o">(</span><span class="s">&quot;jdbc.driverClassName&quot;</span><span class="o">));</span>
+                <span class="n">dataSource</span><span class="o">.</span><span class="na">setUrl</span><span class="o">(</span><span class="n">environment</span><span class="o">.</span><span class="na">getRequiredProperty</span><span class="o">(</span><span class="s">&quot;jdbc.url&quot;</span><span class="o">));</span>
+                <span class="n">dataSource</span><span class="o">.</span><span class="na">setUsername</span><span class="o">(</span><span class="n">environment</span><span class="o">.</span><span class="na">getRequiredProperty</span><span class="o">(</span><span class="s">&quot;jdbc.username&quot;</span><span class="o">));</span>
+                <span class="n">dataSource</span><span class="o">.</span><span class="na">setPassword</span><span class="o">(</span><span class="n">environment</span><span class="o">.</span><span class="na">getRequiredProperty</span><span class="o">(</span><span class="s">&quot;jdbc.password&quot;</span><span class="o">));</span>
+                <span class="k">return</span> <span class="n">dataSource</span><span class="o">;</span>
+        <span class="o">}</span>
+
+<span class="o">}</span>
+</pre></div>
+</td></tr></table></div>
+<p>Отлично, теперь наш сервер знает где находиться база и как к ней обратиться.
+Теперь давайте наполним его задуманным функционалом, и реализуем выполнение
+запросов в базу данных.</p>
+</div>
+<div class="section" id="id3">
+<h2>Создание сущностей<a class="headerlink" href="#id3" title="Ссылка на этот заголовок">¶</a></h2>
+<p>Для начала нам необходимо создать сущности марки и модели автомобилей, этими данными сервер будет
+обмениваться с базой. В пакете <code class="docutils literal"><span class="pre">com.scrud</span></code> создадим новый пакет <code class="docutils literal"><span class="pre">model</span></code>.
+В него поместим класс <code class="docutils literal"><span class="pre">CarBrand</span></code>:</p>
+<div class="highlight-java"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre> 1
+ 2
+ 3
+ 4
+ 5
+ 6
+ 7
+ 8
+ 9
+10
+11
+12
+13
+14
+15
+16
+17
+18
+19
+20
+21
+22
+23
+24
+25
+26
+27
+28
+29
+30
+31
+32
+33
+34
+35
+36
+37
+38
+39
+40
+41
+42
+43
+44
+45
+46
+47
+48
+49
+50
+51
+52
+53
+54
+55
+56
+57
+58
+59
+60
+61
+62
+63
+64</pre></div></td><td class="code"><div class="highlight"><pre><span></span><span class="kn">package</span> <span class="nn">com.scrud.model</span><span class="o">;</span>
+
+<span class="kn">import</span> <span class="nn">org.hibernate.validator.constraints.NotEmpty</span><span class="o">;</span>
+<span class="kn">import</span> <span class="nn">javax.persistence.*</span><span class="o">;</span>
+<span class="kn">import</span> <span class="nn">java.io.Serializable</span><span class="o">;</span>
+
+<span class="nd">@Entity</span>
+<span class="nd">@Table</span><span class="o">(</span><span class="n">name</span> <span class="o">=</span> <span class="s">&quot;brand&quot;</span><span class="o">)</span>
+<span class="nd">@NamedQuery</span><span class="o">(</span><span class="n">name</span> <span class="o">=</span> <span class="s">&quot;CarBrand.findAll&quot;</span><span class="o">,</span> <span class="n">query</span> <span class="o">=</span> <span class="s">&quot;select c from CarBrand c&quot;</span><span class="o">)</span>
+
+<span class="kd">public</span> <span class="kd">class</span> <span class="nc">CarBrand</span> <span class="kd">implements</span> <span class="n">Serializable</span> <span class="o">{</span>
+        <span class="nd">@Id</span> <span class="nd">@GeneratedValue</span><span class="o">(</span><span class="n">strategy</span><span class="o">=</span> <span class="n">GenerationType</span><span class="o">.</span><span class="na">AUTO</span><span class="o">)</span>
+        <span class="kd">private</span> <span class="kt">int</span> <span class="n">idBrand</span><span class="o">;</span>
+        <span class="nd">@NotEmpty</span> <span class="nd">@Column</span><span class="o">(</span><span class="n">unique</span><span class="o">=</span><span class="kc">true</span><span class="o">,</span> <span class="n">nullable</span><span class="o">=</span><span class="kc">false</span><span class="o">)</span>
+        <span class="kd">private</span> <span class="n">String</span> <span class="n">name</span><span class="o">;</span>
+
+        <span class="nd">@Column</span> <span class="kd">private</span> <span class="kt">short</span> <span class="n">foundedYear</span><span class="o">;</span>
+
+        <span class="nd">@Column</span> <span class="kd">private</span> <span class="n">String</span> <span class="n">headquarter</span><span class="o">;</span>
+
+        <span class="kd">public</span> <span class="nf">CarBrand</span><span class="o">()</span> <span class="o">{}</span>
+
+        <span class="kd">public</span> <span class="kt">void</span> <span class="nf">setIdBrand</span><span class="o">(</span><span class="kt">int</span> <span class="n">idBrand</span><span class="o">)</span> <span class="o">{</span>
+                <span class="k">this</span><span class="o">.</span><span class="na">idBrand</span> <span class="o">=</span> <span class="n">idBrand</span><span class="o">;</span>
+        <span class="o">}</span>
+
+        <span class="kd">public</span> <span class="kt">void</span> <span class="nf">setName</span><span class="o">(</span><span class="n">String</span> <span class="n">name</span><span class="o">)</span> <span class="o">{</span>
+                <span class="k">this</span><span class="o">.</span><span class="na">name</span> <span class="o">=</span> <span class="n">name</span><span class="o">;</span>
+        <span class="o">}</span>
+
+        <span class="kd">public</span> <span class="kt">void</span> <span class="nf">setFoundedYear</span><span class="o">(</span><span class="kt">short</span> <span class="n">foundedYear</span><span class="o">)</span> <span class="o">{</span>
+                <span class="k">this</span><span class="o">.</span><span class="na">foundedYear</span> <span class="o">=</span> <span class="n">foundedYear</span><span class="o">;</span>
+        <span class="o">}</span>
+
+        <span class="kd">public</span> <span class="kt">void</span> <span class="nf">setHeadquarter</span><span class="o">(</span><span class="n">String</span> <span class="n">headquarter</span><span class="o">)</span> <span class="o">{</span>
+                <span class="k">this</span><span class="o">.</span><span class="na">headquarter</span> <span class="o">=</span> <span class="n">headquarter</span><span class="o">;</span>
+        <span class="o">}</span>
+
+        <span class="kd">public</span> <span class="kt">int</span> <span class="nf">getIdBrand</span><span class="o">()</span> <span class="o">{</span>
+                <span class="k">return</span> <span class="n">idBrand</span><span class="o">;</span>
+        <span class="o">}</span>
+
+        <span class="kd">public</span> <span class="n">String</span> <span class="nf">getName</span><span class="o">()</span> <span class="o">{</span>
+                <span class="k">return</span> <span class="n">name</span><span class="o">;</span>
+        <span class="o">}</span>
+
+        <span class="kd">public</span> <span class="kt">short</span> <span class="nf">getFoundedYear</span><span class="o">()</span> <span class="o">{</span>
+                <span class="k">return</span> <span class="n">foundedYear</span><span class="o">;</span>
+        <span class="o">}</span>
+
+        <span class="kd">public</span> <span class="n">String</span> <span class="nf">getHeadquarter</span><span class="o">()</span> <span class="o">{</span>
+                <span class="k">return</span> <span class="n">headquarter</span><span class="o">;</span>
+        <span class="o">}</span>
+
+        <span class="nd">@Override</span>
+        <span class="kd">public</span> <span class="n">String</span> <span class="nf">toString</span><span class="o">()</span> <span class="o">{</span>
+                <span class="k">return</span> <span class="s">&quot;CarBrand{&quot;</span> <span class="o">+</span>
+                                <span class="s">&quot;idBrand=&quot;</span> <span class="o">+</span> <span class="n">idBrand</span> <span class="o">+</span>
+                                <span class="s">&quot;, name=&#39;&quot;</span> <span class="o">+</span> <span class="n">name</span> <span class="o">+</span> <span class="sc">&#39;\&#39;&#39;</span> <span class="o">+</span>
+                                <span class="s">&quot;, foundedYear=&quot;</span> <span class="o">+</span> <span class="n">foundedYear</span> <span class="o">+</span>
+                                <span class="s">&quot;, headquarter=&#39;&quot;</span> <span class="o">+</span> <span class="n">headquarter</span> <span class="o">+</span> <span class="sc">&#39;\&#39;&#39;</span> <span class="o">+</span>
+                                <span class="sc">&#39;}&#39;</span><span class="o">;</span>
+        <span class="o">}</span>
+<span class="o">}</span>
+</pre></div>
+</td></tr></table></div>
+<p>И туда же поместим класс <code class="docutils literal"><span class="pre">CarModel</span></code>:</p>
+<div class="highlight-java"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre>  1
+  2
+  3
+  4
+  5
+  6
+  7
+  8
+  9
+ 10
+ 11
+ 12
+ 13
+ 14
+ 15
+ 16
+ 17
+ 18
+ 19
+ 20
+ 21
+ 22
+ 23
+ 24
+ 25
+ 26
+ 27
+ 28
+ 29
+ 30
+ 31
+ 32
+ 33
+ 34
+ 35
+ 36
+ 37
+ 38
+ 39
+ 40
+ 41
+ 42
+ 43
+ 44
+ 45
+ 46
+ 47
+ 48
+ 49
+ 50
+ 51
+ 52
+ 53
+ 54
+ 55
+ 56
+ 57
+ 58
+ 59
+ 60
+ 61
+ 62
+ 63
+ 64
+ 65
+ 66
+ 67
+ 68
+ 69
+ 70
+ 71
+ 72
+ 73
+ 74
+ 75
+ 76
+ 77
+ 78
+ 79
+ 80
+ 81
+ 82
+ 83
+ 84
+ 85
+ 86
+ 87
+ 88
+ 89
+ 90
+ 91
+ 92
+ 93
+ 94
+ 95
+ 96
+ 97
+ 98
+ 99
+100
+101
+102
+103
+104
+105
+106
+107
+108
+109
+110
+111
+112
+113
+114
+115
+116
+117
+118</pre></div></td><td class="code"><div class="highlight"><pre><span></span><span class="kn">package</span> <span class="nn">com.scrud.model</span><span class="o">;</span>
+
+<span class="kn">import</span> <span class="nn">org.hibernate.validator.constraints.NotEmpty</span><span class="o">;</span>
+<span class="kn">import</span> <span class="nn">javax.persistence.*</span><span class="o">;</span>
+<span class="kn">import</span> <span class="nn">java.io.Serializable</span><span class="o">;</span>
+
+<span class="nd">@Entity</span>
+<span class="nd">@Table</span><span class="o">(</span><span class="n">name</span><span class="o">=</span><span class="s">&quot;model&quot;</span><span class="o">)</span>
+<span class="nd">@NamedQuery</span><span class="o">(</span><span class="n">name</span><span class="o">=</span><span class="s">&quot;CarModel.findAll&quot;</span><span class="o">,</span> <span class="n">query</span><span class="o">=</span><span class="s">&quot;select m from CarModel m&quot;</span><span class="o">)</span>
+
+<span class="kd">public</span> <span class="kd">class</span> <span class="nc">CarModel</span> <span class="kd">implements</span> <span class="n">Serializable</span> <span class="o">{</span>
+        <span class="nd">@Id</span> <span class="nd">@GeneratedValue</span><span class="o">(</span><span class="n">strategy</span><span class="o">=</span> <span class="n">GenerationType</span><span class="o">.</span><span class="na">AUTO</span><span class="o">)</span>
+        <span class="kd">private</span> <span class="kt">int</span> <span class="n">idModel</span><span class="o">;</span>
+
+        <span class="nd">@Column</span><span class="o">(</span><span class="n">insertable</span> <span class="o">=</span> <span class="kc">false</span><span class="o">,</span> <span class="n">updatable</span> <span class="o">=</span> <span class="kc">false</span><span class="o">)</span>
+        <span class="kd">private</span> <span class="kt">int</span> <span class="n">idBrand</span><span class="o">;</span>
+
+        <span class="nd">@ManyToOne</span>
+        <span class="nd">@JoinColumn</span><span class="o">(</span><span class="n">name</span> <span class="o">=</span> <span class="s">&quot;idBrand&quot;</span><span class="o">)</span>
+        <span class="kd">private</span> <span class="n">CarBrand</span> <span class="n">carBrand</span><span class="o">;</span>
+
+        <span class="nd">@NotEmpty</span> <span class="nd">@Column</span>
+        <span class="kd">private</span> <span class="n">String</span> <span class="n">modelName</span><span class="o">;</span>
+        <span class="nd">@Column</span> <span class="kd">private</span> <span class="n">String</span> <span class="n">generation</span><span class="o">;</span>
+        <span class="nd">@Column</span> <span class="kd">private</span> <span class="kt">short</span> <span class="n">productionYear</span><span class="o">;</span>
+        <span class="nd">@Column</span> <span class="kd">private</span> <span class="kt">byte</span> <span class="n">doors</span><span class="o">;</span>
+        <span class="nd">@Column</span> <span class="kd">private</span> <span class="kt">byte</span> <span class="n">seats</span><span class="o">;</span>
+        <span class="nd">@Column</span> <span class="kd">private</span> <span class="kt">short</span> <span class="n">maximumSpeed</span><span class="o">;</span>
+
+        <span class="kd">public</span> <span class="nf">CarModel</span><span class="o">()</span> <span class="o">{}</span>
+
+        <span class="kd">public</span> <span class="kt">int</span> <span class="nf">getIdModel</span><span class="o">()</span> <span class="o">{</span>
+                <span class="k">return</span> <span class="n">idModel</span><span class="o">;</span>
+        <span class="o">}</span>
+
+        <span class="kd">public</span> <span class="kt">int</span> <span class="nf">getIdBrand</span><span class="o">()</span> <span class="o">{</span>
+                <span class="k">return</span> <span class="n">idBrand</span><span class="o">;</span>
+        <span class="o">}</span>
+
+        <span class="kd">public</span> <span class="n">CarBrand</span> <span class="nf">getCarBrand</span><span class="o">()</span> <span class="o">{</span>
+                <span class="k">return</span> <span class="n">carBrand</span><span class="o">;</span>
+        <span class="o">}</span>
+
+        <span class="kd">public</span> <span class="n">String</span> <span class="nf">getModelName</span><span class="o">()</span> <span class="o">{</span>
+                <span class="k">return</span> <span class="n">modelName</span><span class="o">;</span>
+        <span class="o">}</span>
+
+        <span class="kd">public</span> <span class="n">String</span> <span class="nf">getGeneration</span><span class="o">()</span> <span class="o">{</span>
+                <span class="k">return</span> <span class="n">generation</span><span class="o">;</span>
+        <span class="o">}</span>
+
+        <span class="kd">public</span> <span class="kt">short</span> <span class="nf">getProductionYear</span><span class="o">()</span> <span class="o">{</span>
+                <span class="k">return</span> <span class="n">productionYear</span><span class="o">;</span>
+        <span class="o">}</span>
+
+        <span class="kd">public</span> <span class="kt">byte</span> <span class="nf">getDoors</span><span class="o">()</span> <span class="o">{</span>
+                <span class="k">return</span> <span class="n">doors</span><span class="o">;</span>
+        <span class="o">}</span>
+
+        <span class="kd">public</span> <span class="kt">byte</span> <span class="nf">getSeats</span><span class="o">()</span> <span class="o">{</span>
+                <span class="k">return</span> <span class="n">seats</span><span class="o">;</span>
+        <span class="o">}</span>
+
+        <span class="kd">public</span> <span class="kt">short</span> <span class="nf">getMaximumSpeed</span><span class="o">()</span> <span class="o">{</span>
+                <span class="k">return</span> <span class="n">maximumSpeed</span><span class="o">;</span>
+        <span class="o">}</span>
+
+        <span class="kd">public</span> <span class="kt">void</span> <span class="nf">setIdModel</span><span class="o">(</span><span class="kt">int</span> <span class="n">idModel</span><span class="o">)</span> <span class="o">{</span>
+                <span class="k">this</span><span class="o">.</span><span class="na">idModel</span> <span class="o">=</span> <span class="n">idModel</span><span class="o">;</span>
+        <span class="o">}</span>
+
+        <span class="kd">public</span> <span class="kt">void</span> <span class="nf">setIdBrand</span><span class="o">(</span><span class="kt">int</span> <span class="n">idBrand</span><span class="o">)</span> <span class="o">{</span>
+                <span class="k">this</span><span class="o">.</span><span class="na">idBrand</span> <span class="o">=</span> <span class="n">idBrand</span><span class="o">;</span>
+        <span class="o">}</span>
+
+        <span class="kd">public</span> <span class="kt">void</span> <span class="nf">setCarBrand</span><span class="o">(</span><span class="n">CarBrand</span> <span class="n">carBrand</span><span class="o">)</span> <span class="o">{</span>
+                <span class="k">this</span><span class="o">.</span><span class="na">carBrand</span> <span class="o">=</span> <span class="n">carBrand</span><span class="o">;</span>
+        <span class="o">}</span>
+
+        <span class="kd">public</span> <span class="kt">void</span> <span class="nf">setModelName</span><span class="o">(</span><span class="n">String</span> <span class="n">modelName</span><span class="o">)</span> <span class="o">{</span>
+                <span class="k">this</span><span class="o">.</span><span class="na">modelName</span> <span class="o">=</span> <span class="n">modelName</span><span class="o">;</span>
+        <span class="o">}</span>
+
+        <span class="kd">public</span> <span class="kt">void</span> <span class="nf">setGeneration</span><span class="o">(</span><span class="n">String</span> <span class="n">generation</span><span class="o">)</span> <span class="o">{</span>
+                <span class="k">this</span><span class="o">.</span><span class="na">generation</span> <span class="o">=</span> <span class="n">generation</span><span class="o">;</span>
+        <span class="o">}</span>
+
+        <span class="kd">public</span> <span class="kt">void</span> <span class="nf">setProductionYear</span><span class="o">(</span><span class="kt">short</span> <span class="n">productionYear</span><span class="o">)</span> <span class="o">{</span>
+                <span class="k">this</span><span class="o">.</span><span class="na">productionYear</span> <span class="o">=</span> <span class="n">productionYear</span><span class="o">;</span>
+        <span class="o">}</span>
+
+        <span class="kd">public</span> <span class="kt">void</span> <span class="nf">setDoors</span><span class="o">(</span><span class="kt">byte</span> <span class="n">doors</span><span class="o">)</span> <span class="o">{</span>
+                <span class="k">this</span><span class="o">.</span><span class="na">doors</span> <span class="o">=</span> <span class="n">doors</span><span class="o">;</span>
+        <span class="o">}</span>
+
+        <span class="kd">public</span> <span class="kt">void</span> <span class="nf">setSeats</span><span class="o">(</span><span class="kt">byte</span> <span class="n">seats</span><span class="o">)</span> <span class="o">{</span>
+                <span class="k">this</span><span class="o">.</span><span class="na">seats</span> <span class="o">=</span> <span class="n">seats</span><span class="o">;</span>
+        <span class="o">}</span>
+
+        <span class="kd">public</span> <span class="kt">void</span> <span class="nf">setMaximumSpeed</span><span class="o">(</span><span class="kt">short</span> <span class="n">maximumSpeed</span><span class="o">)</span> <span class="o">{</span>
+                <span class="k">this</span><span class="o">.</span><span class="na">maximumSpeed</span> <span class="o">=</span> <span class="n">maximumSpeed</span><span class="o">;</span>
+        <span class="o">}</span>
+
+        <span class="nd">@Override</span>
+        <span class="kd">public</span> <span class="n">String</span> <span class="nf">toString</span><span class="o">()</span> <span class="o">{</span>
+                <span class="k">return</span> <span class="s">&quot;CarModel{&quot;</span> <span class="o">+</span>
+                                <span class="s">&quot;idModel=&quot;</span> <span class="o">+</span> <span class="n">idModel</span> <span class="o">+</span>
+                                <span class="s">&quot;, carBrand=&quot;</span> <span class="o">+</span> <span class="n">carBrand</span><span class="o">.</span><span class="na">getName</span><span class="o">()</span> <span class="o">+</span>
+                                <span class="s">&quot;, idBrand=&quot;</span> <span class="o">+</span> <span class="n">idBrand</span> <span class="o">+</span>
+                                <span class="s">&quot;, modelName=&#39;&quot;</span> <span class="o">+</span> <span class="n">modelName</span> <span class="o">+</span> <span class="sc">&#39;\&#39;&#39;</span> <span class="o">+</span>
+                                <span class="s">&quot;, generation=&#39;&quot;</span> <span class="o">+</span> <span class="n">generation</span> <span class="o">+</span> <span class="sc">&#39;\&#39;&#39;</span> <span class="o">+</span>
+                                <span class="s">&quot;, productionYear=&quot;</span> <span class="o">+</span> <span class="n">productionYear</span> <span class="o">+</span>
+                                <span class="s">&quot;, doors=&quot;</span> <span class="o">+</span> <span class="n">doors</span> <span class="o">+</span>
+                                <span class="s">&quot;, seats=&quot;</span> <span class="o">+</span> <span class="n">seats</span> <span class="o">+</span>
+                                <span class="s">&quot;, maximumSpeed=&quot;</span> <span class="o">+</span> <span class="n">maximumSpeed</span> <span class="o">+</span>
+                                <span class="sc">&#39;}&#39;</span><span class="o">;</span>
+        <span class="o">}</span>
+<span class="o">}</span>
+</pre></div>
+</td></tr></table></div>
+<p>В этих классах с помощью аннотаций уже указаны необходимые запросы в базу и соответствия между полями.</p>
+<p><a class="reference external" href="/_static/resources.7z">Скачаь ресурсы</a></p>
+</div>
+</div>
+
+
+          </div>
+        </div>
+      </div>
+      <div class="sphinxsidebar" role="navigation" aria-label="main navigation">
+        <div class="sphinxsidebarwrapper">
+  <h3><a href="index.html">Оглавление</a></h3>
+  <ul>
+<li><a class="reference internal" href="#">Наполнение сервера</a><ul>
+<li><a class="reference internal" href="#id2">Привязка к базе</a></li>
+<li><a class="reference internal" href="#id3">Создание сущностей</a></li>
+</ul>
+</li>
+</ul>
+
+  <h4>Предыдущий раздел</h4>
+  <p class="topless"><a href="createproject.html"
+                        title="предыдущая глава">Создание проекта</a></p>
+  <div role="note" aria-label="source link">
+    <h3>Эта страница</h3>
+    <ul class="this-page-menu">
+      <li><a href="_sources/server-base.txt"
+            rel="nofollow">Исходный текст</a></li>
+    </ul>
+   </div>
+<div id="searchbox" style="display: none" role="search">
+  <h3>Быстрый поиск</h3>
+    <form class="search" action="search.html" method="get">
+      <input type="text" name="q" />
+      <input type="submit" value="Искать" />
+      <input type="hidden" name="check_keywords" value="yes" />
+      <input type="hidden" name="area" value="default" />
+    </form>
+</div>
+<script type="text/javascript">$('#searchbox').show(0);</script>
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="related" role="navigation" aria-label="related navigation">
+      <h3>Навигация</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="genindex.html" title="Алфавитный указатель"
+             >указатель</a></li>
+        <li class="right" >
+          <a href="createproject.html" title="Создание проекта"
+             >назад</a> |</li>
+        <li class="nav-item nav-item-0"><a href="index.html">Документация CRUD_docs 1</a> &raquo;</li> 
+      </ul>
+    </div>
+    <div class="footer" role="contentinfo">
+        &copy; Copyright 2016, Dmitriy, Vladimir.
+    </div>
+  </body>
+</html>

@@ -8,7 +8,7 @@ CRUD_operations documentation
 	
 	mysqlinst
 	createproject
-	example1
+	server-base
 	
 
 * :ref:`genindex`
