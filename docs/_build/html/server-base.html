@@ -491,8 +491,302 @@
 <span class="o">}</span>
 </pre></div>
 </td></tr></table></div>
-<p>В этих классах с помощью аннотаций уже указаны необходимые запросы в базу и соответствия между полями.</p>
-<p><a class="reference external" href="/_static/resources.7z">Скачаь ресурсы</a></p>
+<p>В этих классах с помощью аннотаций уже указаны необходимые запросы в базу и соответствия между полями.
+Теперь необходимо задать серверу логику обработки данных трёма вариантами:</p>
+<ul class="simple">
+<li>Hibernate</li>
+<li>JDBC</li>
+<li>JPA</li>
+</ul>
+</div>
+<div class="section" id="id4">
+<h2>Настройка конфигураций запросов<a class="headerlink" href="#id4" title="Ссылка на этот заголовок">¶</a></h2>
+<p>В пакет <code class="docutils literal"><span class="pre">com.scrud.config</span></code> добавим 3 класса:</p>
+<ol class="arabic simple">
+<li><code class="docutils literal"><span class="pre">HibernateConfig</span></code>:</li>
+</ol>
+<div class="highlight-java"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre> 1
+ 2
+ 3
+ 4
+ 5
+ 6
+ 7
+ 8
+ 9
+10
+11
+12
+13
+14
+15
+16
+17
+18
+19
+20
+21
+22
+23
+24
+25
+26
+27
+28
+29
+30
+31
+32
+33
+34
+35
+36
+37
+38
+39
+40
+41
+42
+43
+44
+45
+46
+47
+48
+49
+50
+51
+52</pre></div></td><td class="code"><div class="highlight"><pre><span></span><span class="kn">package</span> <span class="nn">com.scrud.config</span><span class="o">;</span>
+
+<span class="kn">import</span> <span class="nn">com.scrud.dao.CarBrandDAO</span><span class="o">;</span>
+<span class="kn">import</span> <span class="nn">com.scrud.dao.CarModelDAO</span><span class="o">;</span>
+<span class="kn">import</span> <span class="nn">com.scrud.dao.hibernate.CarBrandDAOHibernateImpl</span><span class="o">;</span>
+<span class="kn">import</span> <span class="nn">com.scrud.dao.hibernate.CarModelDAOHibernateImpl</span><span class="o">;</span>
+<span class="kn">import</span> <span class="nn">org.hibernate.SessionFactory</span><span class="o">;</span>
+<span class="kn">import</span> <span class="nn">org.springframework.beans.factory.annotation.Autowired</span><span class="o">;</span>
+<span class="kn">import</span> <span class="nn">org.springframework.context.annotation.Bean</span><span class="o">;</span>
+<span class="kn">import</span> <span class="nn">org.springframework.context.annotation.ComponentScan</span><span class="o">;</span>
+<span class="kn">import</span> <span class="nn">org.springframework.context.annotation.Configuration</span><span class="o">;</span>
+<span class="kn">import</span> <span class="nn">org.springframework.context.annotation.PropertySource</span><span class="o">;</span>
+<span class="kn">import</span> <span class="nn">org.springframework.orm.hibernate4.HibernateTransactionManager</span><span class="o">;</span>
+<span class="kn">import</span> <span class="nn">org.springframework.orm.hibernate4.LocalSessionFactoryBean</span><span class="o">;</span>
+<span class="kn">import</span> <span class="nn">org.springframework.transaction.annotation.EnableTransactionManagement</span><span class="o">;</span>
+<span class="kn">import</span> <span class="nn">javax.sql.DataSource</span><span class="o">;</span>
+
+<span class="nd">@Configuration</span>
+<span class="nd">@EnableTransactionManagement</span>
+<span class="nd">@PropertySource</span><span class="o">(</span><span class="n">value</span> <span class="o">=</span> <span class="o">{</span><span class="s">&quot;classpath:application.properties&quot;</span><span class="o">})</span>
+<span class="nd">@ComponentScan</span><span class="o">({</span><span class="s">&quot;com.scrud&quot;</span><span class="o">})</span>
+<span class="kd">public</span> <span class="kd">class</span> <span class="nc">HibernateConfig</span> <span class="o">{</span>
+
+        <span class="nd">@Autowired</span>
+        <span class="kd">private</span> <span class="n">DataSource</span> <span class="n">dataSource</span><span class="o">;</span>
+
+        <span class="c1">//Hibernate configuration</span>
+        <span class="nd">@Bean</span>
+        <span class="kd">public</span> <span class="n">LocalSessionFactoryBean</span> <span class="nf">sessionFactory</span><span class="o">()</span> <span class="o">{</span>
+                <span class="n">LocalSessionFactoryBean</span> <span class="n">sessionFactory</span> <span class="o">=</span> <span class="k">new</span> <span class="n">LocalSessionFactoryBean</span><span class="o">();</span>
+                <span class="n">sessionFactory</span><span class="o">.</span><span class="na">setDataSource</span><span class="o">(</span><span class="n">dataSource</span><span class="o">);</span>
+                <span class="n">sessionFactory</span><span class="o">.</span><span class="na">setPackagesToScan</span><span class="o">(</span><span class="k">new</span> <span class="n">String</span><span class="o">[]</span> <span class="o">{</span> <span class="s">&quot;com.scrud.model&quot;</span> <span class="o">});</span>
+                <span class="k">return</span> <span class="n">sessionFactory</span><span class="o">;</span>
+        <span class="o">}</span>
+
+        <span class="nd">@Bean</span>
+        <span class="nd">@Autowired</span>
+        <span class="kd">public</span> <span class="n">HibernateTransactionManager</span> <span class="nf">hibernateTransactionManager</span><span class="o">(</span><span class="n">SessionFactory</span> <span class="n">s</span><span class="o">)</span> <span class="o">{</span>
+                <span class="n">HibernateTransactionManager</span> <span class="n">txManager</span> <span class="o">=</span> <span class="k">new</span> <span class="n">HibernateTransactionManager</span><span class="o">();</span>
+                <span class="n">txManager</span><span class="o">.</span><span class="na">setSessionFactory</span><span class="o">(</span><span class="n">s</span><span class="o">);</span>
+                <span class="k">return</span> <span class="n">txManager</span><span class="o">;</span>
+        <span class="o">}</span>
+
+        <span class="nd">@Bean</span>
+        <span class="kd">public</span> <span class="n">CarBrandDAO</span> <span class="nf">getCarBrandHibernateDAO</span><span class="o">()</span> <span class="o">{</span>
+                <span class="k">return</span> <span class="k">new</span> <span class="n">CarBrandDAOHibernateImpl</span><span class="o">();</span>
+        <span class="o">}</span>
+        <span class="nd">@Bean</span>
+        <span class="kd">public</span> <span class="n">CarModelDAO</span> <span class="nf">getCarModelHibernateDAO</span><span class="o">()</span> <span class="o">{</span>
+                <span class="k">return</span> <span class="k">new</span> <span class="n">CarModelDAOHibernateImpl</span><span class="o">();</span>
+        <span class="o">}</span>
+<span class="o">}</span>
+</pre></div>
+</td></tr></table></div>
+<ol class="arabic simple" start="2">
+<li><code class="docutils literal"><span class="pre">JdbcConfig</span></code>:</li>
+</ol>
+<div class="highlight-java"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre> 1
+ 2
+ 3
+ 4
+ 5
+ 6
+ 7
+ 8
+ 9
+10
+11
+12
+13
+14
+15
+16
+17
+18
+19
+20
+21
+22
+23
+24
+25
+26</pre></div></td><td class="code"><div class="highlight"><pre><span></span><span class="kn">package</span> <span class="nn">com.scrud.config</span><span class="o">;</span>
+
+<span class="kn">import</span> <span class="nn">com.scrud.dao.CarBrandDAO</span><span class="o">;</span>
+<span class="kn">import</span> <span class="nn">com.scrud.dao.CarModelDAO</span><span class="o">;</span>
+<span class="kn">import</span> <span class="nn">com.scrud.dao.jdbc.CarBrandDAOJdbcImpl</span><span class="o">;</span>
+<span class="kn">import</span> <span class="nn">com.scrud.dao.jdbc.CarModelDAOJdbcImpl</span><span class="o">;</span>
+<span class="kn">import</span> <span class="nn">org.springframework.beans.factory.annotation.Autowired</span><span class="o">;</span>
+<span class="kn">import</span> <span class="nn">org.springframework.context.annotation.Bean</span><span class="o">;</span>
+<span class="kn">import</span> <span class="nn">org.springframework.context.annotation.Configuration</span><span class="o">;</span>
+
+<span class="kn">import</span> <span class="nn">javax.sql.DataSource</span><span class="o">;</span>
+
+<span class="nd">@Configuration</span>
+<span class="kd">public</span> <span class="kd">class</span> <span class="nc">JdbcConfig</span> <span class="o">{</span>
+        <span class="nd">@Autowired</span>
+        <span class="kd">private</span> <span class="n">DataSource</span> <span class="n">dataSource</span><span class="o">;</span>
+
+        <span class="nd">@Bean</span>
+        <span class="kd">public</span> <span class="n">CarBrandDAO</span> <span class="nf">getCarBrandJdbcDAO</span><span class="o">()</span> <span class="o">{</span>
+                <span class="k">return</span> <span class="k">new</span> <span class="n">CarBrandDAOJdbcImpl</span><span class="o">(</span><span class="n">dataSource</span><span class="o">);</span>
+        <span class="o">}</span>
+        <span class="nd">@Bean</span>
+        <span class="kd">public</span> <span class="n">CarModelDAO</span> <span class="nf">getCarModelJdbcDAO</span><span class="o">()</span> <span class="o">{</span>
+                <span class="k">return</span> <span class="k">new</span> <span class="n">CarModelDAOJdbcImpl</span><span class="o">(</span><span class="n">dataSource</span><span class="o">);</span>
+        <span class="o">}</span>
+<span class="o">}</span>
+</pre></div>
+</td></tr></table></div>
+<ol class="arabic simple" start="3">
+<li><code class="docutils literal"><span class="pre">JpaConfig</span></code>:</li>
+</ol>
+<div class="highlight-java"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre> 1
+ 2
+ 3
+ 4
+ 5
+ 6
+ 7
+ 8
+ 9
+10
+11
+12
+13
+14
+15
+16
+17
+18
+19
+20
+21
+22
+23
+24
+25
+26
+27
+28
+29
+30
+31
+32
+33
+34
+35
+36
+37
+38
+39
+40
+41
+42
+43
+44
+45
+46
+47
+48
+49
+50
+51
+52
+53
+54
+55
+56
+57
+58</pre></div></td><td class="code"><div class="highlight"><pre><span></span><span class="kn">package</span> <span class="nn">com.scrud.config</span><span class="o">;</span>
+
+<span class="kn">import</span> <span class="nn">javax.persistence.EntityManagerFactory</span><span class="o">;</span>
+<span class="kn">import</span> <span class="nn">javax.sql.DataSource</span><span class="o">;</span>
+
+<span class="kn">import</span> <span class="nn">com.scrud.dao.CarBrandDAO</span><span class="o">;</span>
+<span class="kn">import</span> <span class="nn">com.scrud.dao.CarModelDAO</span><span class="o">;</span>
+<span class="kn">import</span> <span class="nn">com.scrud.dao.jpa.CarBrandDAOJpaImpl</span><span class="o">;</span>
+<span class="kn">import</span> <span class="nn">com.scrud.dao.jpa.CarModelDAOJpaImpl</span><span class="o">;</span>
+<span class="kn">import</span> <span class="nn">org.springframework.beans.factory.annotation.Autowired</span><span class="o">;</span>
+<span class="kn">import</span> <span class="nn">org.springframework.context.annotation.Bean</span><span class="o">;</span>
+<span class="kn">import</span> <span class="nn">org.springframework.context.annotation.ComponentScan</span><span class="o">;</span>
+<span class="kn">import</span> <span class="nn">org.springframework.context.annotation.Configuration</span><span class="o">;</span>
+<span class="kn">import</span> <span class="nn">org.springframework.context.annotation.PropertySource</span><span class="o">;</span>
+<span class="kn">import</span> <span class="nn">org.springframework.orm.jpa.JpaTransactionManager</span><span class="o">;</span>
+<span class="kn">import</span> <span class="nn">org.springframework.orm.jpa.LocalContainerEntityManagerFactoryBean</span><span class="o">;</span>
+<span class="kn">import</span> <span class="nn">org.springframework.orm.jpa.vendor.HibernateJpaVendorAdapter</span><span class="o">;</span>
+<span class="kn">import</span> <span class="nn">org.springframework.transaction.PlatformTransactionManager</span><span class="o">;</span>
+<span class="kn">import</span> <span class="nn">org.springframework.transaction.annotation.EnableTransactionManagement</span><span class="o">;</span>
+
+<span class="nd">@Configuration</span>
+<span class="nd">@PropertySource</span><span class="o">(</span><span class="n">value</span> <span class="o">=</span> <span class="o">{</span><span class="s">&quot;classpath:application.properties&quot;</span><span class="o">})</span>
+<span class="nd">@ComponentScan</span>
+<span class="nd">@EnableTransactionManagement</span>
+<span class="kd">public</span> <span class="kd">class</span> <span class="nc">JpaConfig</span> <span class="o">{</span>
+        <span class="nd">@Autowired</span>
+        <span class="kd">private</span> <span class="n">DataSource</span> <span class="n">dataSource</span><span class="o">;</span>
+
+        <span class="nd">@Bean</span>
+        <span class="kd">public</span> <span class="n">LocalContainerEntityManagerFactoryBean</span> <span class="nf">entityManagerFactory</span><span class="o">()</span> <span class="o">{</span>
+                <span class="n">LocalContainerEntityManagerFactoryBean</span> <span class="n">entityManagerFactory</span> <span class="o">=</span>  <span class="k">new</span> <span class="n">LocalContainerEntityManagerFactoryBean</span><span class="o">();</span>
+
+                <span class="n">entityManagerFactory</span><span class="o">.</span><span class="na">setDataSource</span><span class="o">(</span><span class="n">dataSource</span><span class="o">);</span>
+                <span class="n">entityManagerFactory</span><span class="o">.</span><span class="na">setPackagesToScan</span><span class="o">(</span><span class="k">new</span> <span class="n">String</span><span class="o">[]</span> <span class="o">{</span><span class="s">&quot;com.scrud.model&quot;</span><span class="o">});</span>
+                <span class="n">HibernateJpaVendorAdapter</span> <span class="n">vendorAdapter</span> <span class="o">=</span> <span class="k">new</span> <span class="n">HibernateJpaVendorAdapter</span><span class="o">();</span>
+                <span class="n">entityManagerFactory</span><span class="o">.</span><span class="na">setJpaVendorAdapter</span><span class="o">(</span><span class="n">vendorAdapter</span><span class="o">);</span>
+
+                <span class="k">return</span> <span class="n">entityManagerFactory</span><span class="o">;</span>
+        <span class="o">}</span>
+
+        <span class="nd">@Bean</span>
+        <span class="nd">@Autowired</span>
+        <span class="kd">public</span> <span class="n">PlatformTransactionManager</span> <span class="nf">jpaTransactionManager</span><span class="o">(</span><span class="n">EntityManagerFactory</span> <span class="n">emf</span><span class="o">)</span> <span class="o">{</span>
+                <span class="n">JpaTransactionManager</span> <span class="n">txManager</span> <span class="o">=</span> <span class="k">new</span> <span class="n">JpaTransactionManager</span><span class="o">();</span>
+                <span class="n">txManager</span><span class="o">.</span><span class="na">setEntityManagerFactory</span><span class="o">(</span><span class="n">emf</span><span class="o">);</span>
+                <span class="k">return</span> <span class="n">txManager</span><span class="o">;</span>
+        <span class="o">}</span>
+
+        <span class="nd">@Bean</span>
+        <span class="kd">public</span> <span class="n">CarBrandDAO</span> <span class="nf">getCarBrandJpaDAO</span><span class="o">()</span> <span class="o">{</span>
+                <span class="k">return</span> <span class="k">new</span> <span class="n">CarBrandDAOJpaImpl</span><span class="o">();</span>
+        <span class="o">}</span>
+
+        <span class="nd">@Bean</span>
+        <span class="kd">public</span> <span class="n">CarModelDAO</span> <span class="nf">getCarModelJpaDAO</span><span class="o">()</span> <span class="o">{</span>
+                <span class="k">return</span> <span class="k">new</span> <span class="n">CarModelDAOJpaImpl</span><span class="o">();</span>
+        <span class="o">}</span>
+<span class="o">}</span>
+</pre></div>
+</td></tr></table></div>
+<p><a class="reference external" href="..*/_static/resources.7z">Скачаь ресурсы</a></p>
 </div>
 </div>
 
@@ -507,6 +801,7 @@
 <li><a class="reference internal" href="#">Наполнение сервера</a><ul>
 <li><a class="reference internal" href="#id2">Привязка к базе</a></li>
 <li><a class="reference internal" href="#id3">Создание сущностей</a></li>
+<li><a class="reference internal" href="#id4">Настройка конфигураций запросов</a></li>
 </ul>
 </li>
 </ul>

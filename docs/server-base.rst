@@ -256,5 +256,171 @@
 	}
 	
 В этих классах с помощью аннотаций уже указаны необходимые запросы в базу и соответствия между полями.
+Теперь необходимо задать серверу логику обработки данных трёма вариантами:
 
-`Скачаь ресурсы </_static/resources.7z>`_
+* Hibernate
+* JDBC
+* JPA
+
+Настройка конфигураций запросов
+--------------------------------
+
+В пакет ``com.scrud.config`` добавим 3 класса:
+
+1. ``HibernateConfig``:
+
+.. code-block:: java
+	:linenos:
+	
+	package com.scrud.config;
+	
+	import com.scrud.dao.CarBrandDAO;
+	import com.scrud.dao.CarModelDAO;
+	import com.scrud.dao.hibernate.CarBrandDAOHibernateImpl;
+	import com.scrud.dao.hibernate.CarModelDAOHibernateImpl;
+	import org.hibernate.SessionFactory;
+	import org.springframework.beans.factory.annotation.Autowired;
+	import org.springframework.context.annotation.Bean;
+	import org.springframework.context.annotation.ComponentScan;
+	import org.springframework.context.annotation.Configuration;
+	import org.springframework.context.annotation.PropertySource;
+	import org.springframework.orm.hibernate4.HibernateTransactionManager;
+	import org.springframework.orm.hibernate4.LocalSessionFactoryBean;
+	import org.springframework.transaction.annotation.EnableTransactionManagement;
+	import javax.sql.DataSource;
+	
+	@Configuration
+	@EnableTransactionManagement
+	@PropertySource(value = {"classpath:application.properties"})
+	@ComponentScan({"com.scrud"})
+	public class HibernateConfig {
+	
+		@Autowired
+		private DataSource dataSource;
+	
+		//Hibernate configuration
+		@Bean
+		public LocalSessionFactoryBean sessionFactory() {
+			LocalSessionFactoryBean sessionFactory = new LocalSessionFactoryBean();
+			sessionFactory.setDataSource(dataSource);
+			sessionFactory.setPackagesToScan(new String[] { "com.scrud.model" });
+			return sessionFactory;
+		}
+	
+		@Bean
+		@Autowired
+		public HibernateTransactionManager hibernateTransactionManager(SessionFactory s) {
+			HibernateTransactionManager txManager = new HibernateTransactionManager();
+			txManager.setSessionFactory(s);
+			return txManager;
+		}
+	
+		@Bean
+		public CarBrandDAO getCarBrandHibernateDAO() {
+			return new CarBrandDAOHibernateImpl();
+		}
+		@Bean
+		public CarModelDAO getCarModelHibernateDAO() {
+			return new CarModelDAOHibernateImpl();
+		}
+	}
+
+2. ``JdbcConfig``:
+
+.. code-block:: java
+	:linenos:
+	
+	package com.scrud.config;
+	
+	import com.scrud.dao.CarBrandDAO;
+	import com.scrud.dao.CarModelDAO;
+	import com.scrud.dao.jdbc.CarBrandDAOJdbcImpl;
+	import com.scrud.dao.jdbc.CarModelDAOJdbcImpl;
+	import org.springframework.beans.factory.annotation.Autowired;
+	import org.springframework.context.annotation.Bean;
+	import org.springframework.context.annotation.Configuration;
+	
+	import javax.sql.DataSource;
+	
+	@Configuration
+	public class JdbcConfig {
+		@Autowired
+		private DataSource dataSource;
+	
+		@Bean
+		public CarBrandDAO getCarBrandJdbcDAO() {
+			return new CarBrandDAOJdbcImpl(dataSource);
+		}
+		@Bean
+		public CarModelDAO getCarModelJdbcDAO() {
+			return new CarModelDAOJdbcImpl(dataSource);
+		}
+	}
+	
+3. ``JpaConfig``:
+
+.. code-block:: java
+	:linenos:
+	
+	package com.scrud.config;
+
+	import javax.persistence.EntityManagerFactory;
+	import javax.sql.DataSource;
+
+	import com.scrud.dao.CarBrandDAO;
+	import com.scrud.dao.CarModelDAO;
+	import com.scrud.dao.jpa.CarBrandDAOJpaImpl;
+	import com.scrud.dao.jpa.CarModelDAOJpaImpl;
+	import org.springframework.beans.factory.annotation.Autowired;
+	import org.springframework.context.annotation.Bean;
+	import org.springframework.context.annotation.ComponentScan;
+	import org.springframework.context.annotation.Configuration;
+	import org.springframework.context.annotation.PropertySource;
+	import org.springframework.orm.jpa.JpaTransactionManager;
+	import org.springframework.orm.jpa.LocalContainerEntityManagerFactoryBean;
+	import org.springframework.orm.jpa.vendor.HibernateJpaVendorAdapter;
+	import org.springframework.transaction.PlatformTransactionManager;
+	import org.springframework.transaction.annotation.EnableTransactionManagement;
+	
+	@Configuration
+	@PropertySource(value = {"classpath:application.properties"})
+	@ComponentScan
+	@EnableTransactionManagement
+	public class JpaConfig {
+		@Autowired
+		private DataSource dataSource;
+	
+		@Bean
+		public LocalContainerEntityManagerFactoryBean entityManagerFactory() {
+			LocalContainerEntityManagerFactoryBean entityManagerFactory =  new LocalContainerEntityManagerFactoryBean();
+	
+			entityManagerFactory.setDataSource(dataSource);
+			entityManagerFactory.setPackagesToScan(new String[] {"com.scrud.model"});
+			HibernateJpaVendorAdapter vendorAdapter = new HibernateJpaVendorAdapter();
+			entityManagerFactory.setJpaVendorAdapter(vendorAdapter);
+	
+			return entityManagerFactory;
+		}
+	
+		@Bean
+		@Autowired
+		public PlatformTransactionManager jpaTransactionManager(EntityManagerFactory emf) {
+			JpaTransactionManager txManager = new JpaTransactionManager();
+			txManager.setEntityManagerFactory(emf);
+			return txManager;
+		}
+	
+		@Bean
+		public CarBrandDAO getCarBrandJpaDAO() {
+			return new CarBrandDAOJpaImpl();
+		}
+	
+		@Bean
+		public CarModelDAO getCarModelJpaDAO() {
+			return new CarModelDAOJpaImpl();
+		}
+	}
+
+	
+	
+`Скачаь ресурсы <..*/_static/resources.7z>`_
