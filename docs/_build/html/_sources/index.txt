@@ -1,6 +1,6 @@
 .. _main_index:
 
-CRUD_operations documentation
+CRUD-JAVA documentation
 ===========================================
 	
 .. toctree::
