@@ -9,6 +9,7 @@ CRUD_operations documentation
 	mysqlinst
 	createproject
 	server-base
+	frontend
 	
 
 * :ref:`genindex`

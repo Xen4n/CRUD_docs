@@ -1,0 +1,388 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+
+<html xmlns="http://www.w3.org/1999/xhtml" lang="ru">
+  <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    
+    <title>Создание страниц и оформления &mdash; Документация CRUD_docs 1</title>
+    
+    <link rel="stylesheet" href="_static/classic.css" type="text/css" />
+    <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
+    
+    <script type="text/javascript">
+      var DOCUMENTATION_OPTIONS = {
+        URL_ROOT:    './',
+        VERSION:     '1',
+        COLLAPSE_INDEX: false,
+        FILE_SUFFIX: '.html',
+        HAS_SOURCE:  true
+      };
+    </script>
+    <script type="text/javascript" src="_static/jquery.js"></script>
+    <script type="text/javascript" src="_static/underscore.js"></script>
+    <script type="text/javascript" src="_static/doctools.js"></script>
+    <script type="text/javascript" src="_static/translations.js"></script>
+    <link rel="top" title="Документация CRUD_docs 1" href="index.html" />
+    <link rel="prev" title="Наполнение сервера" href="server-base.html" /> 
+  </head>
+  <body role="document">
+    <div class="related" role="navigation" aria-label="related navigation">
+      <h3>Навигация</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="genindex.html" title="Алфавитный указатель"
+             accesskey="I">указатель</a></li>
+        <li class="right" >
+          <a href="server-base.html" title="Наполнение сервера"
+             accesskey="P">назад</a> |</li>
+        <li class="nav-item nav-item-0"><a href="index.html">Документация CRUD_docs 1</a> &raquo;</li> 
+      </ul>
+    </div>  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          <div class="body" role="main">
+            
+  <div class="section" id="frontend">
+<span id="id1"></span><h1>Создание страниц и оформления<a class="headerlink" href="#frontend" title="Ссылка на этот заголовок">¶</a></h1>
+<p>Наш сайт почти готов. Осталось только создать страницы, которые будут возвращаться пользователю
+после запроса на сервер.</p>
+<div class="section" id="id2">
+<h2>Создание страниц<a class="headerlink" href="#id2" title="Ссылка на этот заголовок">¶</a></h2>
+<p>Мы уже создавали главную страницу сайта. Теперь в ту же дерикторию <code class="docutils literal"><span class="pre">pages</span></code> добавим 3 новых файла JSP:</p>
+<p>1. <code class="docutils literal"><span class="pre">brandForm.jsp</span></code>:</p>
+<div class="highlight-default"><div class="highlight"><pre><span></span>&lt;%@ taglib prefix=&quot;form&quot; uri=&quot;http://www.springframework.org/tags/form&quot; %&gt;
+&lt;%@ taglib prefix=&quot;c&quot; uri=&quot;http://java.sun.com/jsp/jstl/core&quot; %&gt;
+&lt;%@ page contentType=&quot;text/html;charset=UTF-8&quot; language=&quot;java&quot; %&gt;
+&lt;html&gt;
+&lt;head&gt;
+        &lt;link href=&quot;&lt;c:url value=&quot;${pageContext.request.contextPath}/webjars/bootstrap/3.1.0/css/bootstrap.min.css&quot; /&gt;&quot; rel=&quot;stylesheet&quot;&gt;
+        &lt;link href=&quot;/resources/css/basic.css&quot; rel=&quot;stylesheet&quot;&gt;
+
+        &lt;script src=&quot;&lt;c:url value=&quot;${pageContext.request.contextPath}/webjars/jquery/1.9.0/jquery.min.js&quot;  /&gt;&quot;&gt;&lt;/script&gt;
+        &lt;script src=&quot;&lt;c:url value=&quot;${pageContext.request.contextPath}/webjars/bootstrap/3.1.0/js/bootstrap.js&quot;  /&gt;&quot;&gt;&lt;/script&gt;
+
+        &lt;title&gt;${title}&lt;/title&gt;
+&lt;/head&gt;
+&lt;body&gt;
+        &lt;c:import url=&quot;page_components/header.jsp&quot;&gt;&lt;/c:import&gt;
+        &lt;div class=&quot;container&quot; &gt;
+        &lt;div class=&quot;row&quot;&gt;
+                &lt;div class=&quot;col-lg-6 col-lg-offset-3&quot;&gt;
+                        &lt;div class=&quot;panel panel-primary&quot;&gt;
+                                &lt;div class=&quot;panel-heading&quot;&gt;
+                                        &lt;div class=&quot;text-center&quot;&gt;
+                                                &lt;h1&gt;${action} brand &lt;small&gt;using ${title}&lt;/small&gt;&lt;/h1&gt;
+                                        &lt;/div&gt;
+                                &lt;/div&gt;
+                                &lt;div class=&quot;panel-body&quot;&gt;
+                                        &lt;form:form method=&quot;POST&quot; modelAttribute=&quot;carBrand&quot; class=&quot;form-horizontal&quot;&gt;
+                                                &lt;form:hidden path=&quot;idBrand&quot;/&gt;
+                                                &lt;div class=&quot;form-group&quot;&gt;
+                                                        &lt;label for=&quot;name&quot; class=&quot;col-sm-3 control-label&quot;&gt;Brand name:&lt;/label&gt;
+                                                        &lt;div class=&quot;col-sm-9&quot;&gt;
+                                                                &lt;form:input path=&quot;name&quot; class=&quot;form-control&quot; /&gt;
+                                                        &lt;/div&gt;
+                                                &lt;/div&gt;
+                                                &lt;div class=&quot;form-group&quot;&gt;
+                                                        &lt;label for=&quot;foundedYear&quot; class=&quot;col-sm-3 control-label&quot;&gt;Founded year:&lt;/label&gt;
+                                                        &lt;div class=&quot;col-sm-9&quot;&gt;
+                                                                &lt;form:input path=&quot;foundedYear&quot; class=&quot;form-control&quot; type=&quot;number&quot; min=&quot;1800&quot; max=&quot;2050&quot;  /&gt;
+                                                        &lt;/div&gt;
+                                                &lt;/div&gt;
+                                                &lt;div class=&quot;form-group&quot;&gt;
+                                                        &lt;label for=&quot;headquarter&quot; class=&quot;col-sm-3 control-label&quot;&gt;Headquarter:&lt;/label&gt;
+                                                        &lt;div class=&quot;col-sm-9&quot;&gt;
+                                                                &lt;form:input path=&quot;headquarter&quot; class=&quot;form-control&quot; /&gt;
+                                                        &lt;/div&gt;
+                                                &lt;/div&gt;
+                                                &lt;div class=&quot;form-group&quot;&gt;
+                                                        &lt;div class=&quot;col-sm-offset-3 col-sm-9&quot;&gt;
+                                                                &lt;button type=&quot;submit&quot; class=&quot;btn btn-primary&quot;&gt;Save&lt;/button&gt;
+                                                        &lt;/div&gt;
+                                                &lt;/div&gt;
+                                        &lt;/form:form&gt;
+                                &lt;/div&gt;
+                                &lt;/div&gt;
+                        &lt;/div&gt;
+                &lt;/div&gt;
+        &lt;/div&gt;
+&lt;/body&gt;
+&lt;/html&gt;
+</pre></div>
+</div>
+<p>2. <code class="docutils literal"><span class="pre">modelForm.jsp</span></code>:</p>
+<div class="highlight-default"><div class="highlight"><pre><span></span>&lt;%@ taglib prefix=&quot;form&quot; uri=&quot;http://www.springframework.org/tags/form&quot; %&gt;
+&lt;%@ taglib prefix=&quot;c&quot; uri=&quot;http://java.sun.com/jsp/jstl/core&quot; %&gt;
+&lt;%@ page contentType=&quot;text/html;charset=UTF-8&quot; language=&quot;java&quot; %&gt;
+&lt;html&gt;
+&lt;head&gt;
+        &lt;meta name=&quot;viewport&quot; content=&quot;initial-scale=1, maximum-scale=1&quot;&gt;
+        &lt;link href=&quot;&lt;c:url value=&quot;${pageContext.request.contextPath}/webjars/bootstrap/3.1.0/css/bootstrap.min.css&quot; /&gt;&quot; rel=&quot;stylesheet&quot;&gt;
+        &lt;link href=&quot;/resources/css/basic.css&quot; rel=&quot;stylesheet&quot;&gt;
+
+        &lt;script src=&quot;&lt;c:url value=&quot;${pageContext.request.contextPath}/webjars/jquery/1.9.0/jquery.min.js&quot;  /&gt;&quot;&gt;&lt;/script&gt;
+        &lt;script src=&quot;&lt;c:url value=&quot;${pageContext.request.contextPath}/webjars/bootstrap/3.1.0/js/bootstrap.js&quot;  /&gt;&quot;&gt;&lt;/script&gt;
+
+        &lt;title&gt;${title}&lt;/title&gt;
+&lt;/head&gt;
+&lt;body&gt;
+&lt;c:import url=&quot;page_components/header.jsp&quot;&gt;&lt;/c:import&gt;
+&lt;div class=&quot;container&quot; &gt;
+        &lt;div class=&quot;row&quot;&gt;
+                &lt;div class=&quot;col-lg-6 col-lg-offset-3&quot;&gt;
+                        &lt;div class=&quot;panel panel-primary&quot;&gt;
+                                &lt;div class=&quot;panel-heading&quot;&gt;
+                                        &lt;div class=&quot;text-center&quot;&gt;
+                                                &lt;h1&gt;${action} model &lt;small&gt;using ${title}&lt;/small&gt;&lt;/h1&gt;
+                                        &lt;/div&gt;
+                                &lt;/div&gt;
+                                &lt;div class=&quot;panel-body&quot;&gt;
+                                        &lt;form:form method=&quot;POST&quot; modelAttribute=&quot;carModel&quot; class=&quot;form-horizontal&quot;&gt;
+                                                &lt;form:hidden path=&quot;idModel&quot;/&gt;
+                                                &lt;div class=&quot;form-group&quot;&gt;
+                                                        &lt;label for=&quot;idBrand&quot; class=&quot;col-sm-3 control-label&quot; &gt;Brand:&lt;/label&gt;
+                                                        &lt;div class=&quot;col-sm-9&quot;&gt;
+                                                                &lt;form:select path=&quot;idBrand&quot; multiple=&quot;false&quot; class=&quot;form-control&quot;&gt;
+                                                                        &lt;c:forEach var=&quot;brand&quot; items=&quot;${listCarBrand}&quot; varStatus=&quot;status&quot;&gt;
+                                                                                &lt;c:choose&gt;
+                                                                                        &lt;c:when test=&quot;${brand.idBrand == carModel.idBrand}&quot;&gt;
+                                                                                                &lt;option selected value=&quot;${brand.idBrand}&quot;&gt;${brand.name}&lt;/option&gt;
+                                                                                        &lt;/c:when&gt;
+                                                                                        &lt;c:otherwise&gt;
+                                                                                                &lt;option value=&quot;${brand.idBrand}&quot;&gt;${brand.name}&lt;/option&gt;
+                                                                                        &lt;/c:otherwise&gt;
+                                                                                &lt;/c:choose&gt;
+                                                                        &lt;/c:forEach&gt;
+                                                                &lt;/form:select&gt;
+                                                        &lt;/div&gt;
+                                                &lt;/div&gt;
+                                                &lt;div class=&quot;form-group&quot;&gt;
+                                                        &lt;label for=&quot;modelName&quot; class=&quot;col-sm-3 control-label&quot;&gt;Model:&lt;/label&gt;
+                                                        &lt;div class=&quot;col-sm-9&quot;&gt;
+                                                                &lt;form:input path=&quot;modelName&quot; class=&quot;form-control&quot; required=&quot;required&quot;/&gt;
+                                                        &lt;/div&gt;
+                                                &lt;/div&gt;
+                                                &lt;div class=&quot;form-group&quot;&gt;
+                                                        &lt;label for=&quot;generation&quot; class=&quot;col-sm-3 control-label&quot;&gt;Generation:&lt;/label&gt;
+                                                        &lt;div class=&quot;col-sm-9&quot;&gt;
+                                                                &lt;form:input path=&quot;generation&quot; class=&quot;form-control&quot;/&gt;
+                                                        &lt;/div&gt;
+                                                &lt;/div&gt;
+                                                &lt;div class=&quot;form-group&quot;&gt;
+                                                        &lt;label for=&quot;productionYear&quot; class=&quot;col-sm-3 control-label&quot;&gt;Production year:&lt;/label&gt;
+                                                        &lt;div class=&quot;col-sm-9&quot;&gt;
+                                                                &lt;form:input path=&quot;productionYear&quot; class=&quot;form-control&quot; type=&quot;number&quot; min=&quot;1800&quot; max=&quot;2050&quot;  /&gt;
+                                                        &lt;/div&gt;
+                                                &lt;/div&gt;
+                                                &lt;div class=&quot;form-group&quot;&gt;
+                                                        &lt;label for=&quot;doors&quot; class=&quot;col-sm-3 control-label&quot;&gt;Doors:&lt;/label&gt;
+                                                        &lt;div class=&quot;col-sm-9&quot;&gt;
+                                                                &lt;form:input path=&quot;doors&quot; class=&quot;form-control&quot; type=&quot;number&quot; min=&quot;0&quot; max=&quot;10&quot;  /&gt;
+                                                        &lt;/div&gt;
+                                                &lt;/div&gt;
+                                                &lt;div class=&quot;form-group&quot;&gt;
+                                                        &lt;label for=&quot;seats&quot; class=&quot;col-sm-3 control-label&quot;&gt;Seats:&lt;/label&gt;
+                                                        &lt;div class=&quot;col-sm-9&quot;&gt;
+                                                                &lt;form:input path=&quot;seats&quot; class=&quot;form-control&quot; type=&quot;number&quot; min=&quot;0&quot; max=&quot;50&quot;  /&gt;
+                                                        &lt;/div&gt;
+                                                &lt;/div&gt;
+                                                &lt;div class=&quot;form-group&quot;&gt;
+                                                        &lt;label for=&quot;maximumSpeed&quot; class=&quot;col-sm-3 control-label&quot;&gt;Max speed:&lt;/label&gt;
+                                                        &lt;div class=&quot;col-sm-9&quot;&gt;
+                                                                &lt;form:input path=&quot;maximumSpeed&quot; class=&quot;form-control&quot; type=&quot;number&quot; min=&quot;0&quot; max=&quot;550&quot;  /&gt;
+                                                        &lt;/div&gt;
+                                                &lt;/div&gt;
+                                                &lt;div class=&quot;form-group&quot;&gt;
+                                                        &lt;div class=&quot;col-sm-offset-3 col-sm-9&quot;&gt;
+                                                                &lt;button type=&quot;submit&quot; class=&quot;btn btn-primary&quot;&gt;Save&lt;/button&gt;
+                                                        &lt;/div&gt;
+                                                &lt;/div&gt;
+                                        &lt;/form:form&gt;
+                                &lt;/div&gt;
+                        &lt;/div&gt;
+                        &lt;/div&gt;
+                &lt;/div&gt;
+        &lt;/div&gt;
+&lt;/body&gt;
+&lt;/html&gt;
+</pre></div>
+</div>
+<p>3. <code class="docutils literal"><span class="pre">content.jsp</span></code>:</p>
+<div class="highlight-default"><div class="highlight"><pre><span></span>&lt;%@ taglib prefix=&quot;c&quot; uri=&quot;http://java.sun.com/jsp/jstl/core&quot; %&gt;
+&lt;%@ page contentType=&quot;text/html;charset=UTF-8&quot; language=&quot;java&quot; %&gt;
+&lt;html&gt;
+        &lt;head&gt;
+                &lt;link href=&quot;&lt;c:url value=&quot;${pageContext.request.contextPath}/webjars/bootstrap/3.1.0/css/bootstrap.min.css&quot; /&gt;&quot; rel=&quot;stylesheet&quot;&gt;
+                &lt;link href=&quot;/resources/css/basic.css&quot; rel=&quot;stylesheet&quot;&gt;
+
+                &lt;script src=&quot;&lt;c:url value=&quot;${pageContext.request.contextPath}/webjars/jquery/1.9.0/jquery.min.js&quot;  /&gt;&quot;&gt;&lt;/script&gt;
+                &lt;script src=&quot;&lt;c:url value=&quot;${pageContext.request.contextPath}/webjars/bootstrap/3.1.0/js/bootstrap.js&quot;  /&gt;&quot;&gt;&lt;/script&gt;
+
+                &lt;title&gt;CRUD - ${title}&lt;/title&gt;
+        &lt;/head&gt;
+        &lt;/tab&gt;
+                &lt;c:import url=&quot;page_components/header.jsp&quot;&gt;&lt;/c:import&gt;
+                &lt;div class=&quot;container&quot; &gt;
+                        &lt;div class=&quot;row&quot;&gt;
+                                &lt;div class=&quot;col-lg-10 col-lg-offset-1&quot;&gt;
+                                        &lt;div class=&quot;panel panel-primary&quot;&gt;
+                                                &lt;div class=&quot;panel-heading&quot;&gt;
+                                                        &lt;div class=&quot;text-center&quot;&gt;
+                                                                &lt;h1&gt;${title}&lt;small&gt; crud operations&lt;/small&gt;&lt;/h1&gt;
+                                                        &lt;/div&gt;
+                                                &lt;/div&gt;
+                                                &lt;div class=&quot;alert alert-info&quot; role=&quot;alert&quot;&gt;
+                                                        &lt;a class=&quot;btn btn-primary&quot; role=&quot;button&quot; href=&quot;/${instrument}/pdfReport?view=pdfView&quot; target=&quot;_blank&quot;&gt;Download PDF report&lt;/a&gt;
+                                                        &lt;a class=&quot;btn btn-primary&quot; role=&quot;button&quot; href=&quot;/${instrument}/xlsxReport.xlsx?view=excelView&quot; target=&quot;_blank&quot;&gt;Download Excel report&lt;/a&gt;
+                                                &lt;/div&gt;
+                                                &lt;div class=&quot;panel-body&quot;&gt;
+                                                        &lt;div class=&quot;panel panel-info&quot;&gt;
+                                                                &lt;!-- Default panel contents --&gt;
+                                                                &lt;div class=&quot;panel-heading&quot;&gt;
+                                                                        &lt;div class=&quot;text-center&quot;&gt;&lt;h3&gt;Brands&lt;/h3&gt;&lt;/div&gt;
+                                                                &lt;/div&gt;
+                                                                        &lt;table class=&quot;table table-striped table-condensed&quot; id=&quot;car-brands&quot;&gt;
+                                                                                &lt;thead&gt;
+                                                                                        &lt;th&gt;&lt;button class=&quot;sort&quot; data-sort=&quot;brand-name&quot;&gt;brand&lt;/button&gt;&lt;/th&gt;
+                                                                                        &lt;th&gt;&lt;button class=&quot;sort&quot; data-sort=&quot;founded-year&quot;&gt;founded&lt;/button&gt;&lt;/th&gt;
+                                                                                        &lt;th&gt;&lt;button class=&quot;sort&quot; data-sort=&quot;headquarter&quot;&gt;headquarter&lt;/button&gt;&lt;/th&gt;
+                                                                                        &lt;th&gt;action&lt;/th&gt;
+                                                                                &lt;/thead&gt;
+                                                                                &lt;tbody align=&quot;center&quot; class=&quot;list&quot;&gt;
+                                                                                        &lt;c:forEach var=&quot;brand&quot; items=&quot;${listCarBrand}&quot; varStatus=&quot;status&quot;&gt;
+                                                                                                &lt;tr&gt;
+                                                                                                        &lt;td class=&quot;brand-name&quot;&gt;${brand.name}&lt;/td&gt;
+                                                                                                        &lt;td class=&quot;founded-year&quot;&gt;${brand.foundedYear}&lt;/td&gt;
+                                                                                                        &lt;td class=&quot;headquarter&quot;&gt;${brand.headquarter}&lt;/td&gt;
+                                                                                                        &lt;td class=&quot;action&quot;&gt;
+                                                                                                                &lt;a href=&quot;/${instrument}/edit-brand/${brand.idBrand}&quot;&gt;Edit&lt;/a&gt;
+                                                                                                                &amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;
+                                                                                                                &lt;a href=&quot;/${instrument}/delete-brand/${brand.idBrand}&quot;&gt;Delete&lt;/a&gt;
+                                                                                                        &lt;/td&gt;
+                                                                                                &lt;/tr&gt;
+                                                                                        &lt;/c:forEach&gt;
+                                                                                &lt;/tbody&gt;
+                                                                        &lt;/table&gt;
+                                                                &lt;div class=&quot;panel-footer&quot;&gt;&lt;a class=&quot;btn btn-info&quot; role=&quot;button&quot; href=&quot;/${instrument}/newBrand&quot;&gt;Add new brand &amp;raquo&lt;/a&gt;&lt;/div&gt;
+                                                        &lt;/div&gt;
+
+                                                        &lt;div class=&quot;panel panel-info&quot;&gt;
+                                                                &lt;!-- Default panel contents --&gt;
+                                                                &lt;div class=&quot;panel-heading&quot;&gt;
+                                                                        &lt;div class=&quot;text-center&quot;&gt;&lt;h3&gt;Models&lt;/h3&gt;&lt;/div&gt;
+                                                                &lt;/div&gt;
+                                                                        &lt;table class=&quot;table table-striped table-condensed&quot; id=&quot;car-models&quot;&gt;
+                                                                                &lt;thead&gt;
+                                                                                        &lt;th&gt;&lt;button class=&quot;sort&quot; data-sort=&quot;brand-name&quot;&gt;brand&lt;/button&gt;&lt;/th&gt;
+                                                                                        &lt;th&gt;&lt;button class=&quot;sort&quot; data-sort=&quot;model-name&quot;&gt;model&lt;/button&gt;&lt;/th&gt;
+                                                                                        &lt;th&gt;&lt;button class=&quot;sort&quot; data-sort=&quot;generation&quot;&gt;generation&lt;/button&gt;&lt;/th&gt;
+                                                                                        &lt;th&gt;&lt;button class=&quot;sort&quot; data-sort=&quot;production-year&quot;&gt;produced&lt;/button&gt;&lt;/th&gt;
+                                                                                        &lt;th&gt;&lt;button class=&quot;sort&quot; data-sort=&quot;doors&quot;&gt;doors&lt;/button&gt;&lt;/th&gt;
+                                                                                        &lt;th&gt;&lt;button class=&quot;sort&quot; data-sort=&quot;seats&quot;&gt;seats&lt;/button&gt;&lt;/th&gt;
+                                                                                        &lt;th&gt;&lt;button class=&quot;sort&quot; data-sort=&quot;maximum-speed&quot;&gt;max speed&lt;/button&gt;&lt;/th&gt;
+                                                                                        &lt;th&gt;action&lt;/th&gt;
+                                                                                &lt;/thead&gt;
+                                                                                &lt;tbody align=&quot;center&quot; class=&quot;list&quot;&gt;
+                                                                                        &lt;c:forEach var=&quot;model&quot; items=&quot;${listCarModel}&quot; varStatus=&quot;status&quot;&gt;
+                                                                                                &lt;tr&gt;
+                                                                                                        &lt;td class=&quot;brand-name&quot;&gt;${model.carBrand.name}&lt;/td&gt;
+                                                                                                        &lt;td class=&quot;model-name&quot;&gt;${model.modelName}&lt;/td&gt;
+                                                                                                        &lt;td class=&quot;generation&quot;&gt;${model.generation}&lt;/td&gt;
+                                                                                                        &lt;td class=&quot;production-year&quot;&gt;${model.productionYear}&lt;/td&gt;
+                                                                                                        &lt;td class=&quot;doors&quot;&gt;${model.doors}&lt;/td&gt;
+                                                                                                        &lt;td class=&quot;seats&quot;&gt;${model.seats}&lt;/td&gt;
+                                                                                                        &lt;td class=&quot;maximum-speed&quot;&gt;${model.maximumSpeed}&lt;/td&gt;
+                                                                                                        &lt;td&gt;
+                                                                                                                &lt;a href=&quot;/${instrument}/edit-model/${model.idModel}&quot;&gt;Edit&lt;/a&gt;
+                                                                                                                &amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;
+                                                                                                                &lt;a href=&quot;/${instrument}/delete-model/${model.idModel}&quot;&gt;Delete&lt;/a&gt;
+                                                                                                        &lt;/td&gt;
+
+                                                                                                &lt;/tr&gt;
+                                                                                        &lt;/c:forEach&gt;
+                                                                                &lt;/tbody&gt;
+                                                                        &lt;/table&gt;
+                                                                &lt;div class=&quot;panel-footer&quot;&gt;&lt;a class=&quot;btn btn-info&quot; role=&quot;button&quot; href=&quot;/${instrument}/newModel&quot;&gt;Add new model &amp;raquo&lt;/a&gt;&lt;/div&gt;
+                                                        &lt;/div&gt;
+                                                &lt;/div&gt;
+                                        &lt;/div&gt;
+                                &lt;/div&gt;
+                        &lt;/div&gt;
+                &lt;/div&gt;
+        &lt;script src=&quot;/resources/js/list.min.js&quot;&gt;&lt;/script&gt;
+        &lt;script src=&quot;/resources/js/content-list.js&quot;&gt;&lt;/script&gt;
+        &lt;/body&gt;
+&lt;/html&gt;
+</pre></div>
+</div>
+<p>Все страницы готовы.</p>
+</div>
+<div class="section" id="id3">
+<h2>Добавление оформления<a class="headerlink" href="#id3" title="Ссылка на этот заголовок">¶</a></h2>
+<p>Теперь добавим ресурсы CSS, JS и картинки.</p>
+<p>Скачать необходимые ресурсы можно <a class="reference external" href="https://github.com/Xen4n/CRUD_docs/blob/master/docs/_static/resources.7z?raw=true">отсюда</a>.</p>
+<p>Создадим в директории <code class="docutils literal"><span class="pre">webapp</span></code> папку <code class="docutils literal"><span class="pre">resources</span></code>. Скопируем содержимое архива в папку <code class="docutils literal"><span class="pre">resources</span></code>.</p>
+<p>Наш сайт готов!</p>
+</div>
+</div>
+
+
+          </div>
+        </div>
+      </div>
+      <div class="sphinxsidebar" role="navigation" aria-label="main navigation">
+        <div class="sphinxsidebarwrapper">
+  <h3><a href="index.html">Оглавление</a></h3>
+  <ul>
+<li><a class="reference internal" href="#">Создание страниц и оформления</a><ul>
+<li><a class="reference internal" href="#id2">Создание страниц</a></li>
+<li><a class="reference internal" href="#id3">Добавление оформления</a></li>
+</ul>
+</li>
+</ul>
+
+  <h4>Предыдущий раздел</h4>
+  <p class="topless"><a href="server-base.html"
+                        title="предыдущая глава">Наполнение сервера</a></p>
+  <div role="note" aria-label="source link">
+    <h3>Эта страница</h3>
+    <ul class="this-page-menu">
+      <li><a href="_sources/frontend.txt"
+            rel="nofollow">Исходный текст</a></li>
+    </ul>
+   </div>
+<div id="searchbox" style="display: none" role="search">
+  <h3>Быстрый поиск</h3>
+    <form class="search" action="search.html" method="get">
+      <input type="text" name="q" />
+      <input type="submit" value="Искать" />
+      <input type="hidden" name="check_keywords" value="yes" />
+      <input type="hidden" name="area" value="default" />
+    </form>
+</div>
+<script type="text/javascript">$('#searchbox').show(0);</script>
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="related" role="navigation" aria-label="related navigation">
+      <h3>Навигация</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="genindex.html" title="Алфавитный указатель"
+             >указатель</a></li>
+        <li class="right" >
+          <a href="server-base.html" title="Наполнение сервера"
+             >назад</a> |</li>
+        <li class="nav-item nav-item-0"><a href="index.html">Документация CRUD_docs 1</a> &raquo;</li> 
+      </ul>
+    </div>
+    <div class="footer" role="contentinfo">
+        &copy; Copyright 2016, Dmitriy, Vladimir.
+    </div>
+  </body>
+</html>
